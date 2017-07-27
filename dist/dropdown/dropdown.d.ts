@@ -1,10 +1,15 @@
-import { EventEmitter, ElementRef } from '@angular/core';
+import { EventEmitter, ElementRef, OnInit, OnDestroy, Renderer } from '@angular/core';
 import { NgbDropdownConfig } from './dropdown-config';
 /**
  * Transforms a node into a dropdown.
  */
-export declare class NgbDropdown {
+export declare class NgbDropdown implements OnInit, OnDestroy {
+    private _renderer;
     private _toggleElement;
+    /**
+     * Holds the remove listener method returned by listenGlobal
+     */
+    private _outsideClickListener;
     /**
      * Indicates that the dropdown should open upwards
      */
@@ -22,7 +27,9 @@ export declare class NgbDropdown {
      *  Event's payload equals whether dropdown is open.
      */
     openChange: EventEmitter<{}>;
-    constructor(config: NgbDropdownConfig);
+    constructor(config: NgbDropdownConfig, _renderer: Renderer);
+    ngOnInit(): void;
+    ngOnDestroy(): void;
     /**
      * Checks if the dropdown menu is open or not.
      */
@@ -42,6 +49,7 @@ export declare class NgbDropdown {
     closeFromOutsideClick($event: any): void;
     closeFromOutsideEsc(): void;
     private _isEventFromToggle($event);
+    private _registerListener();
 }
 /**
  * Allows the dropdown to be toggled via click. This directive is optional.

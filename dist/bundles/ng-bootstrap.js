@@ -3735,7 +3735,8 @@ var dropdown_config_1 = __webpack_require__(33);
  * Transforms a node into a dropdown.
  */
 var NgbDropdown = (function () {
-    function NgbDropdown(config) {
+    function NgbDropdown(config, _renderer) {
+        this._renderer = _renderer;
         /**
          *  Defines whether or not the dropdown-menu is open initially.
          */
@@ -3748,6 +3749,12 @@ var NgbDropdown = (function () {
         this.up = config.up;
         this.autoClose = config.autoClose;
     }
+    NgbDropdown.prototype.ngOnInit = function () {
+        if (this._open) {
+            this._registerListener();
+        }
+    };
+    NgbDropdown.prototype.ngOnDestroy = function () { this.close(); };
     /**
      * Checks if the dropdown menu is open or not.
      */
@@ -3758,6 +3765,7 @@ var NgbDropdown = (function () {
     NgbDropdown.prototype.open = function () {
         if (!this._open) {
             this._open = true;
+            this._registerListener();
             this.openChange.emit(true);
         }
     };
@@ -3767,6 +3775,10 @@ var NgbDropdown = (function () {
     NgbDropdown.prototype.close = function () {
         if (this._open) {
             this._open = false;
+            // Removes "listenGlobal" listener
+            if (this._outsideClickListener) {
+                this._outsideClickListener();
+            }
             this.openChange.emit(false);
         }
     };
@@ -3800,6 +3812,10 @@ var NgbDropdown = (function () {
         configurable: true
     });
     NgbDropdown.prototype._isEventFromToggle = function ($event) { return !!this._toggleElement && this._toggleElement.contains($event.target); };
+    NgbDropdown.prototype._registerListener = function () {
+        var _this = this;
+        this._outsideClickListener = this._renderer.listenGlobal('document', 'click', function (e) { return _this.closeFromOutsideClick(e); });
+    };
     return NgbDropdown;
 }());
 __decorate([
@@ -3827,10 +3843,9 @@ NgbDropdown = __decorate([
             '[class.dropup]': 'up',
             '[class.show]': 'isOpen()',
             '(keyup.esc)': 'closeFromOutsideEsc()',
-            '(document:click)': 'closeFromOutsideClick($event)'
         }
     }),
-    __metadata("design:paramtypes", [dropdown_config_1.NgbDropdownConfig])
+    __metadata("design:paramtypes", [dropdown_config_1.NgbDropdownConfig, core_1.Renderer])
 ], NgbDropdown);
 exports.NgbDropdown = NgbDropdown;
 /**
