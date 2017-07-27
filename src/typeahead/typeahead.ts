@@ -21,6 +21,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {letProto} from 'rxjs/operator/let';
 import {_do} from 'rxjs/operator/do';
 import {fromEvent} from 'rxjs/observable/fromEvent';
+import {merge} from 'rxjs/observable/merge';
 import {positionElements} from '../util/positioning';
 import {NgbTypeaheadWindow, ResultTemplateContext} from './typeahead-window';
 import {PopupService} from '../util/popup';
@@ -83,9 +84,11 @@ let nextWindowId = 0;
 export class NgbTypeahead implements ControlValueAccessor,
     OnInit, OnDestroy {
   private _popupService: PopupService<NgbTypeaheadWindow>;
+  private results$: Observable<any>;
   private _subscription: Subscription;
   private _userInput: string;
   private _valueChanges: Observable<string>;
+  private _focusChanges: Observable<string>;
   private _windowRef: ComponentRef<NgbTypeaheadWindow>;
   private _zoneSubscription: any;
 
@@ -128,9 +131,19 @@ export class NgbTypeahead implements ControlValueAccessor,
   @Input() showHint: boolean;
 
   /**
+   * Trigger typeahead window on focus.  Automatically shows the window if the user focuses
+   */
+  @Input() triggerOnFocus: boolean;
+
+  /**
    * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
    */
   @Output() selectItem = new EventEmitter<NgbTypeaheadSelectItemEvent>();
+
+  /**
+   * An event emitted when the window is closed
+   */
+  @Output() onClose = new EventEmitter<any>();
 
   activeDescendant: string;
   popupId = `ngb-typeahead-${nextWindowId++}`;
@@ -147,6 +160,7 @@ export class NgbTypeahead implements ControlValueAccessor,
     this.showHint = config.showHint;
 
     this._valueChanges = fromEvent(_elementRef.nativeElement, 'input', ($event) => $event.target.value);
+    this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', ($event) => $event.target.value);
 
     this._popupService = new PopupService<NgbTypeaheadWindow>(
         NgbTypeaheadWindow, _injector, _viewContainerRef, _renderer, componentFactoryResolver);
@@ -159,14 +173,20 @@ export class NgbTypeahead implements ControlValueAccessor,
   }
 
   ngOnInit(): void {
-    const inputValues$ = _do.call(this._valueChanges, value => {
+    let _inputChanges;
+    if (this.triggerOnFocus) {
+      _inputChanges = merge(this._focusChanges, this._valueChanges);
+    } else {
+      _inputChanges = this._valueChanges;
+    }
+    const inputValues$ = _do.call(_inputChanges, value => {
       this._userInput = value;
       if (this.editable) {
         this._onChange(value);
       }
     });
-    const results$ = letProto.call(inputValues$, this.ngbTypeahead);
-    const userInput$ = _do.call(results$, () => {
+    this.results$ = letProto.call(inputValues$, this.ngbTypeahead);
+    const userInput$ = _do.call(this.results$, () => {
       if (!this.editable) {
         this._onChange(undefined);
       }
