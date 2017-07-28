@@ -17,23 +17,53 @@ export interface ResultTemplateContext {
   term: string;
 }
 
+export interface WindowTemplateContext {}
+
 @Component({
   selector: 'ngb-typeahead-window',
   exportAs: 'ngbTypeaheadWindow',
   host: {'class': 'dropdown-menu', 'style': 'display: block', 'role': 'listbox', '[id]': 'id'},
   template: `
+    <ng-template *ngIf="windowTemplate" #customContent [ngTemplateOutlet]="windowTemplate"
+      [ngOutletContext]="{
+          results: results,
+          term: term,
+          activeIdx: activeIdx,
+          formatter: formatter,
+          markActive: markActive,
+          select: select
+        }">
+    </ng-template>
+    <ng-template *ngIf="!windowTemplate" #defaultContent [ngTemplateOutlet]="windowDefault"
+      [ngOutletContext]="{
+          results: results,
+          term: term,
+          activeIdx: activeIdx,
+          formatter: formatter,
+          markActive: markActive,
+          select: select
+        }">
+    </ng-template>
     <ng-template #rt let-result="result" let-term="term" let-formatter="formatter">
       <ngb-highlight [result]="formatter(result)" [term]="term"></ngb-highlight>
     </ng-template>
-    <ng-template ngFor [ngForOf]="results" let-result let-idx="index">
-      <button type="button" class="dropdown-item" role="option"
-        [id]="id + '-' + idx"
-        [class.active]="idx === activeIdx"
-        (mouseenter)="markActive(idx)"
-        (click)="select(result)">
-          <ng-template [ngTemplateOutlet]="resultTemplate || rt"
-          [ngOutletContext]="{result: result, term: term, formatter: formatter}"></ng-template>
-      </button>
+    <ng-template #windowDefault let-results="results"
+      let-term="term"
+      let-formatter="formatter"
+      let-markActive="markActive"
+      let-activeIdx="activeIdx"
+      let-select="select">
+      <ng-container *ngFor="let result of results">
+        <button type="button" class="dropdown-item" role="option"
+          [id]="id + '-' + idx"
+          [class.active]="idx === activeIdx"
+          (mouseenter)="markActive(idx)"
+          (click)="select(result)">
+            <ng-template [ngTemplateOutlet]="resultTemplate || rt"
+              [ngOutletContext]="{result: result, term: term, formatter: formatter}">
+            </ng-template>
+        </button>
+      </ng-container>
     </ng-template>
   `
 })
@@ -73,11 +103,24 @@ export class NgbTypeaheadWindow implements OnInit {
   @Input() resultTemplate: TemplateRef<ResultTemplateContext>;
 
   /**
+   * A template to override the window template
+   */
+  @Input() windowTemplate: TemplateRef<WindowTemplateContext>;
+
+  /**
    * Event raised when user selects a particular result row
    */
   @Output('select') selectEvent = new EventEmitter();
 
+  /**
+   * Event raised when the active link changes from either hover or keyboard up/down
+   */
   @Output('activeChange') activeChangeEvent = new EventEmitter();
+
+  constructor() {
+    this.markActive = this.markActive.bind(this);
+    this.select = this.select.bind(this);
+  }
 
   getActive() { return this.results[this.activeIdx]; }
 

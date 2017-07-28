@@ -154,7 +154,11 @@ var NgbTypeahead = (function () {
     };
     NgbTypeahead.prototype._selectResultClosePopup = function (result) {
         this._selectResult(result);
-        this._closePopup();
+        // ngDisabled is a feature that the result can have.
+        // If active then we will not close the popup
+        if (!result.ngDisabled) {
+            this._closePopup();
+        }
     };
     NgbTypeahead.prototype._showHint = function () {
         if (this.showHint) {
@@ -188,6 +192,9 @@ var NgbTypeahead = (function () {
                 _this._windowRef.instance.term = _this._elementRef.nativeElement.value;
                 if (_this.resultFormatter) {
                     _this._windowRef.instance.formatter = _this.resultFormatter;
+                }
+                if (_this.windowTemplate) {
+                    _this._windowRef.instance.windowTemplate = _this.windowTemplate;
                 }
                 if (_this.resultTemplate) {
                     _this._windowRef.instance.resultTemplate = _this.resultTemplate;
@@ -247,6 +254,7 @@ NgbTypeahead.propDecorators = {
     'ngbTypeahead': [{ type: Input },],
     'resultFormatter': [{ type: Input },],
     'resultTemplate': [{ type: Input },],
+    'windowTemplate': [{ type: Input },],
     'showHint': [{ type: Input },],
     'triggerOnFocus': [{ type: Input },],
     'selectItem': [{ type: Output },],

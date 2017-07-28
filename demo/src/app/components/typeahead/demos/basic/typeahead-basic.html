@@ -5,7 +5,44 @@ A typeahead example that gets values from a static <code>string[]</code>
   <li>limits to 10 results</li>
 </ul>
 
+<ng-template #resultTemplate let-result="result" let-term="term" let-formatter="formatter">
+  <ngb-highlight [result]="formatter(result)" [term]="term"></ngb-highlight>
+</ng-template>
+
+
+<ng-template #tester let-results="results"
+  let-term="term"
+  let-formatter="formatter"
+  let-markActive="markActive"
+  let-activeIdx="activeIdx"
+  let-select="select">
+  <div class="typeahead-container">
+    <ul class="list list-block"
+        style="display: block;"
+        role="listbox">
+        <li *ngFor="let result of results; let idx=index"
+            [class.active]="idx === activeIdx"
+            (mouseenter)="markActive(idx)"
+            (click)="select(result)"
+            role="option"
+            id="{{result.id}}"
+            class="list-item ghs-autocompleteAddress">
+            <ng-template [ngTemplateOutlet]="resultTemplate"
+              [ngOutletContext]="{result: result, term: term, formatter: formatter}">
+            </ng-template>
+        </li>
+        <li>
+            <i class="google-powered-image"></i>
+        </li>
+    </ul>
+</div>
+</ng-template>
+
 <label for="typeahead-basic">Search for a state:</label>
-<input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="model" triggerOnFocus="true" [ngbTypeahead]="search"/>
+<input id="typeahead-basic" type="text" class="form-control"
+  [(ngModel)]="model"
+  triggerOnFocus="true"
+  [ngbTypeahead]="search"
+  [windowTemplate]="tester" />
 <hr>
 <pre>Model: {{ model | json }}</pre>

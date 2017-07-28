@@ -1,7 +1,7 @@
 import { ComponentFactoryResolver, ElementRef, EventEmitter, Injector, NgZone, OnDestroy, OnInit, Renderer2, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { ResultTemplateContext } from './typeahead-window';
+import { ResultTemplateContext, WindowTemplateContext } from './typeahead-window';
 import { NgbTypeaheadConfig } from './typeahead-config';
 /**
  * Payload of the selectItem event.
@@ -58,6 +58,10 @@ export declare class NgbTypeahead implements ControlValueAccessor, OnInit, OnDes
      * A template to override a matching result default display
      */
     resultTemplate: TemplateRef<ResultTemplateContext>;
+    /**
+     * A template to override the popup window default display
+     */
+    windowTemplate: TemplateRef<WindowTemplateContext>;
     /**
      * Show hint when an option in the result list matches.
      */

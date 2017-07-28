@@ -13,6 +13,8 @@ export interface ResultTemplateContext {
      */
     term: string;
 }
+export interface WindowTemplateContext {
+}
 export declare class NgbTypeaheadWindow implements OnInit {
     activeIdx: number;
     /**
@@ -42,10 +44,18 @@ export declare class NgbTypeaheadWindow implements OnInit {
      */
     resultTemplate: TemplateRef<ResultTemplateContext>;
     /**
+     * A template to override the window template
+     */
+    windowTemplate: TemplateRef<WindowTemplateContext>;
+    /**
      * Event raised when user selects a particular result row
      */
     selectEvent: EventEmitter<{}>;
+    /**
+     * Event raised when the active link changes from either hover or keyboard up/down
+     */
     activeChangeEvent: EventEmitter<{}>;
+    constructor();
     getActive(): any;
     markActive(activeIdx: number): void;
     next(): void;

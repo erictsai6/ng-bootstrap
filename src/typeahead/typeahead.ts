@@ -23,7 +23,7 @@ import {_do} from 'rxjs/operator/do';
 import {fromEvent} from 'rxjs/observable/fromEvent';
 import {merge} from 'rxjs/observable/merge';
 import {positionElements} from '../util/positioning';
-import {NgbTypeaheadWindow, ResultTemplateContext} from './typeahead-window';
+import {NgbTypeaheadWindow, ResultTemplateContext, WindowTemplateContext} from './typeahead-window';
 import {PopupService} from '../util/popup';
 import {toString, isDefined} from '../util/util';
 import {NgbTypeaheadConfig} from './typeahead-config';
@@ -124,6 +124,11 @@ export class NgbTypeahead implements ControlValueAccessor,
    * A template to override a matching result default display
    */
   @Input() resultTemplate: TemplateRef<ResultTemplateContext>;
+
+  /**
+   * A template to override the popup window default display
+   */
+  @Input() windowTemplate: TemplateRef<WindowTemplateContext>;
 
   /**
    * Show hint when an option in the result list matches.
@@ -282,7 +287,12 @@ export class NgbTypeahead implements ControlValueAccessor,
 
   private _selectResultClosePopup(result: any) {
     this._selectResult(result);
-    this._closePopup();
+
+    // ngDisabled is a feature that the result can have.
+    // If active then we will not close the popup
+    if (!result.ngDisabled) {
+      this._closePopup();
+    }
   }
 
   private _showHint() {
@@ -319,6 +329,9 @@ export class NgbTypeahead implements ControlValueAccessor,
         this._windowRef.instance.term = this._elementRef.nativeElement.value;
         if (this.resultFormatter) {
           this._windowRef.instance.formatter = this.resultFormatter;
+        }
+        if (this.windowTemplate) {
+          this._windowRef.instance.windowTemplate = this.windowTemplate;
         }
         if (this.resultTemplate) {
           this._windowRef.instance.resultTemplate = this.resultTemplate;

@@ -2132,7 +2132,12 @@ var NgbTypeaheadWindow = (function () {
          * Event raised when user selects a particular result row
          */
         this.selectEvent = new core_1.EventEmitter();
+        /**
+         * Event raised when the active link changes from either hover or keyboard up/down
+         */
         this.activeChangeEvent = new core_1.EventEmitter();
+        this.markActive = this.markActive.bind(this);
+        this.select = this.select.bind(this);
     }
     NgbTypeaheadWindow.prototype.getActive = function () { return this.results[this.activeIdx]; };
     NgbTypeaheadWindow.prototype.markActive = function (activeIdx) {
@@ -2195,6 +2200,10 @@ __decorate([
     __metadata("design:type", core_1.TemplateRef)
 ], NgbTypeaheadWindow.prototype, "resultTemplate", void 0);
 __decorate([
+    core_1.Input(),
+    __metadata("design:type", core_1.TemplateRef)
+], NgbTypeaheadWindow.prototype, "windowTemplate", void 0);
+__decorate([
     core_1.Output('select'),
     __metadata("design:type", Object)
 ], NgbTypeaheadWindow.prototype, "selectEvent", void 0);
@@ -2207,8 +2216,9 @@ NgbTypeaheadWindow = __decorate([
         selector: 'ngb-typeahead-window',
         exportAs: 'ngbTypeaheadWindow',
         host: { 'class': 'dropdown-menu', 'style': 'display: block', 'role': 'listbox', '[id]': 'id' },
-        template: "\n    <ng-template #rt let-result=\"result\" let-term=\"term\" let-formatter=\"formatter\">\n      <ngb-highlight [result]=\"formatter(result)\" [term]=\"term\"></ngb-highlight>\n    </ng-template>\n    <ng-template ngFor [ngForOf]=\"results\" let-result let-idx=\"index\">\n      <button type=\"button\" class=\"dropdown-item\" role=\"option\"\n        [id]=\"id + '-' + idx\"\n        [class.active]=\"idx === activeIdx\"\n        (mouseenter)=\"markActive(idx)\"\n        (click)=\"select(result)\">\n          <ng-template [ngTemplateOutlet]=\"resultTemplate || rt\"\n          [ngOutletContext]=\"{result: result, term: term, formatter: formatter}\"></ng-template>\n      </button>\n    </ng-template>\n  "
-    })
+        template: "\n    <ng-template *ngIf=\"windowTemplate\" #customContent [ngTemplateOutlet]=\"windowTemplate\"\n      [ngOutletContext]=\"{\n          results: results,\n          term: term,\n          activeIdx: activeIdx,\n          formatter: formatter,\n          markActive: markActive,\n          select: select\n        }\">\n    </ng-template>\n    <ng-template *ngIf=\"!windowTemplate\" #defaultContent [ngTemplateOutlet]=\"windowDefault\"\n      [ngOutletContext]=\"{\n          results: results,\n          term: term,\n          activeIdx: activeIdx,\n          formatter: formatter,\n          markActive: markActive,\n          select: select\n        }\">\n    </ng-template>\n    <ng-template #rt let-result=\"result\" let-term=\"term\" let-formatter=\"formatter\">\n      <ngb-highlight [result]=\"formatter(result)\" [term]=\"term\"></ngb-highlight>\n    </ng-template>\n    <ng-template #windowDefault let-results=\"results\"\n      let-term=\"term\"\n      let-formatter=\"formatter\"\n      let-markActive=\"markActive\"\n      let-activeIdx=\"activeIdx\"\n      let-select=\"select\">\n      <ng-container *ngFor=\"let result of results\">\n        <button type=\"button\" class=\"dropdown-item\" role=\"option\"\n          [id]=\"id + '-' + idx\"\n          [class.active]=\"idx === activeIdx\"\n          (mouseenter)=\"markActive(idx)\"\n          (click)=\"select(result)\">\n            <ng-template [ngTemplateOutlet]=\"resultTemplate || rt\"\n              [ngOutletContext]=\"{result: result, term: term, formatter: formatter}\">\n            </ng-template>\n        </button>\n      </ng-container>\n    </ng-template>\n  "
+    }),
+    __metadata("design:paramtypes", [])
 ], NgbTypeaheadWindow);
 exports.NgbTypeaheadWindow = NgbTypeaheadWindow;
 //# sourceMappingURL=typeahead-window.js.map
@@ -5641,7 +5651,11 @@ var NgbTypeahead = (function () {
     };
     NgbTypeahead.prototype._selectResultClosePopup = function (result) {
         this._selectResult(result);
-        this._closePopup();
+        // ngDisabled is a feature that the result can have.
+        // If active then we will not close the popup
+        if (!result.ngDisabled) {
+            this._closePopup();
+        }
     };
     NgbTypeahead.prototype._showHint = function () {
         if (this.showHint) {
@@ -5675,6 +5689,9 @@ var NgbTypeahead = (function () {
                 _this._windowRef.instance.term = _this._elementRef.nativeElement.value;
                 if (_this.resultFormatter) {
                     _this._windowRef.instance.formatter = _this.resultFormatter;
+                }
+                if (_this.windowTemplate) {
+                    _this._windowRef.instance.windowTemplate = _this.windowTemplate;
                 }
                 if (_this.resultTemplate) {
                     _this._windowRef.instance.resultTemplate = _this.resultTemplate;
@@ -5719,6 +5736,10 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", core_1.TemplateRef)
 ], NgbTypeahead.prototype, "resultTemplate", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", core_1.TemplateRef)
+], NgbTypeahead.prototype, "windowTemplate", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", Boolean)
