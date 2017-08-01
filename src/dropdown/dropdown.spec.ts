@@ -259,7 +259,7 @@ describe('ngb-dropdown-toggle', () => {
   });
 
   it('should not close on outside click if autoClose is set to false', () => {
-    const html = `<button>Outside</button><div ngbDropdown [open]="true" [autoClose]="false"></div>`;
+    const html = `<button>Outside</button><div ngbDropdown [open]="true" [autoClose]="disabled"></div>`;
 
     const fixture = createTestComponent(html);
     const compiled = fixture.nativeElement;
@@ -296,7 +296,7 @@ describe('ngb-dropdown-toggle', () => {
 
   it('should not close on ESC if autoClose is set to false', () => {
     const html = `
-      <div ngbDropdown [autoClose]="false">
+      <div ngbDropdown [autoClose]="disabled">
           <button ngbDropdownToggle>Toggle dropdown</button>
       </div>`;
 
@@ -316,7 +316,7 @@ describe('ngb-dropdown-toggle', () => {
 
   it('should close on item click if autoClose is set to false', () => {
     const html = `
-      <div ngbDropdown [open]="true" [autoClose]="false">
+      <div ngbDropdown [open]="true" [autoClose]="disabled">
           <button ngbDropdownToggle>Toggle dropdown</button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
             <a class="dropdown-item">Action</a>

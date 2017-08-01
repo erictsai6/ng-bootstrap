@@ -4,6 +4,7 @@ import { NgbDropdownConfig } from './dropdown-config';
  * Transforms a node into a dropdown.
  */
 export declare class NgbDropdown implements OnInit, OnDestroy {
+    private _element;
     private _renderer;
     private _toggleElement;
     /**
@@ -17,7 +18,7 @@ export declare class NgbDropdown implements OnInit, OnDestroy {
     /**
      * Indicates that dropdown should be closed when selecting one of dropdown items (click) or pressing ESC.
      */
-    autoClose: boolean;
+    autoClose: 'always' | 'disabled' | 'outsideClick';
     /**
      *  Defines whether or not the dropdown-menu is open initially.
      */
@@ -27,7 +28,7 @@ export declare class NgbDropdown implements OnInit, OnDestroy {
      *  Event's payload equals whether dropdown is open.
      */
     openChange: EventEmitter<{}>;
-    constructor(config: NgbDropdownConfig, _renderer: Renderer);
+    constructor(config: NgbDropdownConfig, _element: ElementRef, _renderer: Renderer);
     ngOnInit(): void;
     ngOnDestroy(): void;
     /**
@@ -49,6 +50,7 @@ export declare class NgbDropdown implements OnInit, OnDestroy {
     closeFromOutsideClick($event: any): void;
     closeFromOutsideEsc(): void;
     private _isEventFromToggle($event);
+    private _isEventFromInside($event);
     private _registerListener();
 }
 /**

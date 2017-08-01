@@ -30,6 +30,7 @@
     "npm": ">=3.10.7 <4.0.0"
   },
   "scripts": {
+    "gulp": "gulp",
     "ci": "gulp ci",
     "disabled:install": "node misc/validate-commit.install.js",
     "test": "karma start karma.conf.js",

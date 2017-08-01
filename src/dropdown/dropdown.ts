@@ -41,7 +41,7 @@ export class NgbDropdown implements OnInit,
   /**
    * Indicates that dropdown should be closed when selecting one of dropdown items (click) or pressing ESC.
    */
-  @Input() autoClose: boolean;
+  @Input() autoClose: 'always' | 'disabled' | 'outsideClick';
 
   /**
    *  Defines whether or not the dropdown-menu is open initially.
@@ -54,7 +54,7 @@ export class NgbDropdown implements OnInit,
    */
   @Output() openChange = new EventEmitter();
 
-  constructor(config: NgbDropdownConfig, private _renderer: Renderer) {
+  constructor(config: NgbDropdownConfig, private _element: ElementRef, private _renderer: Renderer) {
     this.up = config.up;
     this.autoClose = config.autoClose;
   }
@@ -111,7 +111,10 @@ export class NgbDropdown implements OnInit,
   }
 
   closeFromOutsideClick($event) {
-    if (this.autoClose && $event.button !== 2 && !this._isEventFromToggle($event)) {
+    if (this.autoClose === 'always' && $event.button !== 2 && !this._isEventFromToggle($event)) {
+      this.close();
+    }
+    if (this.autoClose === 'outsideClick' && !this._isEventFromInside($event)) {
       this.close();
     }
   }
@@ -128,6 +131,8 @@ export class NgbDropdown implements OnInit,
   set toggleElement(toggleElement: any) { this._toggleElement = toggleElement; }
 
   private _isEventFromToggle($event) { return !!this._toggleElement && this._toggleElement.contains($event.target); }
+
+  private _isEventFromInside($event) { return this._element.nativeElement.contains($event.target); }
 
   private _registerListener() {
     this._outsideClickListener = this._renderer.listenGlobal('document', 'click', (e) => this.closeFromOutsideClick(e));

@@ -4,7 +4,8 @@ import { NgbDropdownConfig } from './dropdown-config';
  * Transforms a node into a dropdown.
  */
 var NgbDropdown = (function () {
-    function NgbDropdown(config, _renderer) {
+    function NgbDropdown(config, _element, _renderer) {
+        this._element = _element;
         this._renderer = _renderer;
         /**
          *  Defines whether or not the dropdown-menu is open initially.
@@ -63,7 +64,10 @@ var NgbDropdown = (function () {
         }
     };
     NgbDropdown.prototype.closeFromOutsideClick = function ($event) {
-        if (this.autoClose && $event.button !== 2 && !this._isEventFromToggle($event)) {
+        if (this.autoClose === 'always' && $event.button !== 2 && !this._isEventFromToggle($event)) {
+            this.close();
+        }
+        if (this.autoClose === 'outsideClick' && !this._isEventFromInside($event)) {
             this.close();
         }
     };
@@ -81,6 +85,7 @@ var NgbDropdown = (function () {
         configurable: true
     });
     NgbDropdown.prototype._isEventFromToggle = function ($event) { return !!this._toggleElement && this._toggleElement.contains($event.target); };
+    NgbDropdown.prototype._isEventFromInside = function ($event) { return this._element.nativeElement.contains($event.target); };
     NgbDropdown.prototype._registerListener = function () {
         var _this = this;
         this._outsideClickListener = this._renderer.listenGlobal('document', 'click', function (e) { return _this.closeFromOutsideClick(e); });
@@ -103,6 +108,7 @@ NgbDropdown.decorators = [
 /** @nocollapse */
 NgbDropdown.ctorParameters = function () { return [
     { type: NgbDropdownConfig, },
+    { type: ElementRef, },
     { type: Renderer, },
 ]; };
 NgbDropdown.propDecorators = {

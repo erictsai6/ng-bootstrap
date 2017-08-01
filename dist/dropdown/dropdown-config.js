@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 var NgbDropdownConfig = (function () {
     function NgbDropdownConfig() {
         this.up = false;
-        this.autoClose = true;
+        this.autoClose = 'always';
     }
     return NgbDropdownConfig;
 }());
