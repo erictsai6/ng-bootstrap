@@ -52,12 +52,15 @@
     "url": "https://github.com/ng-bootstrap/ng-bootstrap/issues"
   },
   "homepage": "https://github.com/ng-bootstrap/ng-bootstrap#readme",
-  "dependencies": {
-    "@angular/core": "4.0.3",
-    "@angular/common": "4.0.3",
-    "@angular/forms": "4.0.3"
+  "peerDependencies": {
+    "@angular/core": "^4.0.3",
+    "@angular/common": "^4.0.3",
+    "@angular/forms": "^4.0.3"
   },
   "devDependencies": {
+    "@angular/core": "4.0.3",
+    "@angular/common": "4.0.3",
+    "@angular/forms": "4.0.3",
     "@angular/compiler": "4.0.3",
     "@angular/compiler-cli": "4.0.3",
     "@angular/http": "4.0.3",
