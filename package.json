@@ -24,7 +24,9 @@
     "typeahead"
   ],
   "author": "https://github.com/ng-bootstrap/ng-bootstrap/graphs/contributors",
-  "main": "dist/index.js",
+  "main": "dist/bundles/ng-bootstrap.js",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "engines": {
     "node": ">=6.9.5 <7.0.0",
     "npm": ">=3.10.7 <4.0.0"
