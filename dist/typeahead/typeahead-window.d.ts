@@ -1,6 +1,23 @@
 import { EventEmitter, TemplateRef, OnInit } from '@angular/core';
 import { toString } from '../util/util';
 /**
+ * Context for the typeahead window template in case you want to override the default one
+ */
+export interface WindowTemplateContext {
+    /**
+     * Your typeahead results data model
+     */
+    results: any;
+    /**
+     * Search term from the input used to get current result
+     */
+    term: string;
+    /**
+     * Typeahead window context
+     */
+    context: NgbTypeaheadWindow;
+}
+/**
  * Context for the typeahead result template in case you want to override the default one
  */
 export interface ResultTemplateContext {
@@ -13,9 +30,19 @@ export interface ResultTemplateContext {
      */
     term: string;
 }
-export interface WindowTemplateContext {
+/**
+ * Context for the typeahead no results template
+ */
+export interface NoResultsTemplateContext {
+    /**
+     * Search term from the input that did not return any results
+     */
+    term: string;
 }
 export declare class NgbTypeaheadWindow implements OnInit {
+    private _results;
+    private _term;
+    private _context;
     activeIdx: number;
     /**
      *  The id for the typeahead widnow. The id should be unique and the same
@@ -27,11 +54,13 @@ export declare class NgbTypeaheadWindow implements OnInit {
      */
     focusFirst: boolean;
     /**
-     * Typeahead match results to be displayed
+     * Typeahead match results to be displayed. Created as get and set so the ngOutletContext is only recreated on data
+     * changes.
      */
     results: any;
     /**
-     * Search term used to get current results
+     * Search term used to get current results. Created as get and set so the ngOutletContext is only recreated on data
+     * changes.
      */
     term: string;
     /**
@@ -44,18 +73,22 @@ export declare class NgbTypeaheadWindow implements OnInit {
      */
     resultTemplate: TemplateRef<ResultTemplateContext>;
     /**
-     * A template to override the window template
+     * A template used to display a no results message in the dropdown window
+     */
+    noResultsTemplate: TemplateRef<any>;
+    /**
+     * A template to override a matching result default display
      */
     windowTemplate: TemplateRef<WindowTemplateContext>;
     /**
      * Event raised when user selects a particular result row
      */
     selectEvent: EventEmitter<{}>;
-    /**
-     * Event raised when the active link changes from either hover or keyboard up/down
-     */
     activeChangeEvent: EventEmitter<{}>;
-    constructor();
+    _getWindowContext(): WindowTemplateContext;
+    _getNoResultsContext(): {
+        term: string;
+    };
     getActive(): any;
     markActive(activeIdx: number): void;
     next(): void;

@@ -5,5 +5,5 @@
  */
 export declare class NgbDropdownConfig {
     up: boolean;
-    autoClose: 'always' | 'disabled' | 'outsideClick';
+    autoClose: boolean;
 }

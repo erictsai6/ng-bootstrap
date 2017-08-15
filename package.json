@@ -1,6 +1,6 @@
 {
   "name": "ng-bootstrap",
-  "version": "1.0.0-alpha.29",
+  "version": "1.0.0-beta.1",
   "description": "Angular powered Bootstrap",
   "keywords": [
     "angular",
@@ -24,21 +24,16 @@
     "typeahead"
   ],
   "author": "https://github.com/ng-bootstrap/ng-bootstrap/graphs/contributors",
-  "main": "dist/bundles/ng-bootstrap.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/index.js",
   "engines": {
     "node": ">=6.9.5 <7.0.0",
     "npm": ">=3.10.7 <4.0.0"
   },
   "scripts": {
-    "gulp": "gulp",
-    "ci": "gulp ci",
-    "disabled:install": "node misc/validate-commit.install.js",
+    "install": "node misc/validate-commit.install.js",
     "test": "karma start karma.conf.js",
     "api-doc-tdd": "jasmine-node misc/api-doc.spec.js --autotest --watch misc/api-doc-test-cases/*.ts misc/api-doc.js",
-    "api-doc-test": "jasmine-node misc/api-doc.spec.js",
-    "build:publish": "gulp build && bash scripts/publish.sh"
+    "api-doc-test": "jasmine-node misc/api-doc.spec.js"
   },
   "repository": {
     "type": "git",
@@ -52,15 +47,12 @@
     "url": "https://github.com/ng-bootstrap/ng-bootstrap/issues"
   },
   "homepage": "https://github.com/ng-bootstrap/ng-bootstrap#readme",
-  "peerDependencies": {
-    "@angular/core": "^4.0.3",
-    "@angular/common": "^4.0.3",
-    "@angular/forms": "^4.0.3"
-  },
-  "devDependencies": {
+  "dependencies": {
     "@angular/core": "4.0.3",
     "@angular/common": "4.0.3",
-    "@angular/forms": "4.0.3",
+    "@angular/forms": "4.0.3"
+  },
+  "devDependencies": {
     "@angular/compiler": "4.0.3",
     "@angular/compiler-cli": "4.0.3",
     "@angular/http": "4.0.3",
@@ -73,7 +65,7 @@
     "angular2-template-loader": "^0.6.0",
     "async-done": "^1.2.2",
     "autoprefixer": "^6.5.1",
-    "bootstrap": "4.0.0-alpha.6",
+    "bootstrap": "4.0.0-beta",
     "clang-format": "1.0.35",
     "copy-webpack-plugin": "^4.0.0",
     "core-js": "^2.4.1",

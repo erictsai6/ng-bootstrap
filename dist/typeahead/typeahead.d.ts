@@ -1,7 +1,7 @@
 import { ComponentFactoryResolver, ElementRef, EventEmitter, Injector, NgZone, OnDestroy, OnInit, Renderer2, TemplateRef, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { ResultTemplateContext, WindowTemplateContext } from './typeahead-window';
+import { ResultTemplateContext, NoResultsTemplateContext, WindowTemplateContext } from './typeahead-window';
 import { NgbTypeaheadConfig } from './typeahead-config';
 /**
  * Payload of the selectItem event.
@@ -25,7 +25,6 @@ export declare class NgbTypeahead implements ControlValueAccessor, OnInit, OnDes
     private _renderer;
     private _injector;
     private _popupService;
-    private results$;
     private _subscription;
     private _userInput;
     private _valueChanges;
@@ -55,29 +54,30 @@ export declare class NgbTypeahead implements ControlValueAccessor, OnInit, OnDes
      */
     resultFormatter: (value: any) => string;
     /**
+     * A template to override the dropdown window default display. WindowTemplate will override any result template that
+     * is set.
+     */
+    windowTemplate: TemplateRef<WindowTemplateContext>;
+    /**
      * A template to override a matching result default display
      */
     resultTemplate: TemplateRef<ResultTemplateContext>;
     /**
-     * A template to override the popup window default display
+     * A template used to display a no results message in the dropdown window
      */
-    windowTemplate: TemplateRef<WindowTemplateContext>;
+    noResultsTemplate: TemplateRef<NoResultsTemplateContext>;
     /**
      * Show hint when an option in the result list matches.
      */
     showHint: boolean;
     /**
-     * Trigger typeahead window on focus.  Automatically shows the window if the user focuses
-     */
+    * Trigger typeahead window on focus.  Automatically shows the window if the user focuses
+    */
     triggerOnFocus: boolean;
     /**
      * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
      */
     selectItem: EventEmitter<NgbTypeaheadSelectItemEvent>;
-    /**
-     * An event emitted when the window is closed
-     */
-    onClose: EventEmitter<any>;
     activeDescendant: string;
     popupId: string;
     private _onTouched;

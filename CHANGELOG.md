@@ -1,3 +1,101 @@
+<a name="1.0.0-beta.1"></a>
+# [1.0.0-beta.1](https://github.com/ng-bootstrap/ng-bootstrap/compare/1.0.0-alpha.31...1.0.0-beta.1) (2017-08-11)
+
+ng-bootstrap goes BETA (and requires Bootstrap CSS 4.0.0-beta now)!
+
+### Bug Fixes
+
+* **dropdown:** update for Bootstrap4.beta ([877c696](https://github.com/ng-bootstrap/ng-bootstrap/commit/877c696)), closes [#1745](https://github.com/ng-bootstrap/ng-bootstrap/issues/1745)
+* **popover:** account for margins when positioning popovers ([5a7df43](https://github.com/ng-bootstrap/ng-bootstrap/commit/5a7df43))
+
+
+### Features
+
+* **buttons:** allow vertical radio buttons ([a38257d](https://github.com/ng-bootstrap/ng-bootstrap/commit/a38257d)), closes [#1231](https://github.com/ng-bootstrap/ng-bootstrap/issues/1231) [#1238](https://github.com/ng-bootstrap/ng-bootstrap/issues/1238) [#1733](https://github.com/ng-bootstrap/ng-bootstrap/issues/1733)
+* **dropdown:** distinguish inside and outside clicks for autoClose ([bb975af](https://github.com/ng-bootstrap/ng-bootstrap/commit/bb975af)), closes [#1022](https://github.com/ng-bootstrap/ng-bootstrap/issues/1022)
+
+
+### BREAKING CHANGES
+
+* ng-bootstrap now requires Bootstrap CSS 4.0.0-beta
+* **buttons:** The `btn-group` CSS class needs to added explicitly for radio buttons.
+
+Before:
+
+```
+<div ngbRadioGroup ...>
+  ...
+</div>
+```
+
+After:
+
+```
+<div class="btn-group" ngbRadioGroup ...>
+  ...
+</div>
+```
+* **dropdown:** Dropdown menu now requires usage of the new `ngbDropdownMenu` directive.
+
+Before:
+
+```html
+<div ngbDropdown>
+  <button ngbDropdownToggle>Toggle dropdown</button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item">Action</a>
+  </div>
+</div>
+```
+
+After (notice **ngbDropdownMenu**):
+
+```html
+<div ngbDropdown>
+  <button ngbDropdownToggle>Toggle dropdown</button>
+  <div ngbDropdownMenu>
+    <a class="dropdown-item">Action</a>
+  </div>
+</div>
+```
+
+
+
+<a name="1.0.0-alpha.31"></a>
+# [1.0.0-alpha.31](https://github.com/ng-bootstrap/ng-bootstrap/compare/1.0.0-alpha.30...1.0.0-alpha.31) (2017-08-11)
+
+This is the last alpha release of ng-bootstrap. Next stop - beta!
+
+### Bug Fixes
+
+* **typeahead:** resubscribe for value changes on blur, esc, enter ([47797d3](https://github.com/ng-bootstrap/ng-bootstrap/commit/47797d3)), closes [#723](https://github.com/ng-bootstrap/ng-bootstrap/issues/723) [#1244](https://github.com/ng-bootstrap/ng-bootstrap/issues/1244)
+
+
+### Features
+
+* **typeahead:** add support for the 'container' input ([bc3fd61](https://github.com/ng-bootstrap/ng-bootstrap/commit/bc3fd61)), closes [#1105](https://github.com/ng-bootstrap/ng-bootstrap/issues/1105) [#1731](https://github.com/ng-bootstrap/ng-bootstrap/issues/1731)
+
+
+
+<a name="1.0.0-alpha.30"></a>
+# [1.0.0-alpha.30](https://github.com/ng-bootstrap/ng-bootstrap/compare/1.0.0-alpha.29...1.0.0-alpha.30) (2017-08-03)
+
+
+### Bug Fixes
+
+* **buttons:** set name on radio inputs to fix keyboard navigation ([3bfd82d](https://github.com/ng-bootstrap/ng-bootstrap/commit/3bfd82d)), closes [#1704](https://github.com/ng-bootstrap/ng-bootstrap/issues/1704) [#1706](https://github.com/ng-bootstrap/ng-bootstrap/issues/1706)
+* **carousel:** restart timer when interval changed ([ae4e3e9](https://github.com/ng-bootstrap/ng-bootstrap/commit/ae4e3e9)), closes [#1690](https://github.com/ng-bootstrap/ng-bootstrap/issues/1690) [#1702](https://github.com/ng-bootstrap/ng-bootstrap/issues/1702)
+* **datepicker:** focus datepicker after opening it inside the popup ([0dbe0cb](https://github.com/ng-bootstrap/ng-bootstrap/commit/0dbe0cb)), closes [#1708](https://github.com/ng-bootstrap/ng-bootstrap/issues/1708) [#1717](https://github.com/ng-bootstrap/ng-bootstrap/issues/1717)
+* **datepicker:** propagate model and validation state on 'input' event ([38b8ffa](https://github.com/ng-bootstrap/ng-bootstrap/commit/38b8ffa)), closes [#1225](https://github.com/ng-bootstrap/ng-bootstrap/issues/1225) [#1605](https://github.com/ng-bootstrap/ng-bootstrap/issues/1605)
+* **datepicker:** retain manually entered values even if invalid ([4bd81c3](https://github.com/ng-bootstrap/ng-bootstrap/commit/4bd81c3)), closes [#1710](https://github.com/ng-bootstrap/ng-bootstrap/issues/1710) [#1725](https://github.com/ng-bootstrap/ng-bootstrap/issues/1725)
+
+
+### Features
+
+* **modal:** add injector option ([0829b30](https://github.com/ng-bootstrap/ng-bootstrap/commit/0829b30)), closes [#1686](https://github.com/ng-bootstrap/ng-bootstrap/issues/1686) [#1685](https://github.com/ng-bootstrap/ng-bootstrap/issues/1685)
+
+
+
 <a name="1.0.0-alpha.29"></a>
 # [1.0.0-alpha.29](https://github.com/ng-bootstrap/ng-bootstrap/compare/1.0.0-alpha.28...1.0.0-alpha.29) (2017-07-25)
 
