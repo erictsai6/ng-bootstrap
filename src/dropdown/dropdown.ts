@@ -1,142 +1,27 @@
 import {
+  forwardRef,
+  Inject,
   Directive,
   Input,
   Output,
   EventEmitter,
   ElementRef,
+  ContentChild,
   OnChanges,
-  OnInit,
-  OnDestroy,
-  Renderer
+  SimpleChanges
 } from '@angular/core';
 import {NgbDropdownConfig} from './dropdown-config';
 
 /**
- * Transforms a node into a dropdown.
  */
-@Directive({
-  selector: '[ngbDropdown]',
-  exportAs: 'ngbDropdown',
-  host: {
-    '[class.dropdown]': '!up',
-    '[class.dropup]': 'up',
-    '[class.show]': 'isOpen()',
-    '(keyup.esc)': 'closeFromOutsideEsc()',
-  }
-})
-export class NgbDropdown implements OnInit,
-    OnDestroy {
-  private _toggleElement: any;
+@Directive(
+    {selector: '[ngbDropdownMenu]', host: {'[class.dropdown-menu]': 'true', '[class.show]': 'dropdown.isOpen()'}})
+export class NgbDropdownMenu {
+  isOpen = false;
 
-  /**
-   * Holds the remove listener method returned by listenGlobal
-   */
-  private _outsideClickListener;
+  constructor(@Inject(forwardRef(() => NgbDropdown)) public dropdown, private _elementRef: ElementRef) {}
 
-  /**
-   * Indicates that the dropdown should open upwards
-   */
-  @Input() up: boolean;
-
-  /**
-   * Indicates that dropdown should be closed when selecting one of dropdown items (click) or pressing ESC.
-   */
-  @Input() autoClose: 'always' | 'disabled' | 'outsideClick';
-
-  /**
-   *  Defines whether or not the dropdown-menu is open initially.
-   */
-  @Input('open') _open = false;
-
-  /**
-   *  An event fired when the dropdown is opened or closed.
-   *  Event's payload equals whether dropdown is open.
-   */
-  @Output() openChange = new EventEmitter();
-
-  constructor(config: NgbDropdownConfig, private _element: ElementRef, private _renderer: Renderer) {
-    this.up = config.up;
-    this.autoClose = config.autoClose;
-  }
-
-  ngOnInit() {
-    if (this._open) {
-      this._registerListener();
-    }
-  }
-
-  ngOnDestroy() { this.close(); }
-
-  /**
-   * Checks if the dropdown menu is open or not.
-   */
-  isOpen(): boolean { return this._open; }
-
-  /**
-   * Opens the dropdown menu of a given navbar or tabbed navigation.
-   */
-  open(): void {
-    if (!this._open) {
-      this._open = true;
-      this._registerListener();
-      this.openChange.emit(true);
-    }
-  }
-
-  /**
-   * Closes the dropdown menu of a given navbar or tabbed navigation.
-   */
-  close(): void {
-    if (this._open) {
-      this._open = false;
-
-      // Removes "listenGlobal" listener
-      if (this._outsideClickListener) {
-        this._outsideClickListener();
-      }
-
-      this.openChange.emit(false);
-    }
-  }
-
-  /**
-   * Toggles the dropdown menu of a given navbar or tabbed navigation.
-   */
-  toggle(): void {
-    if (this.isOpen()) {
-      this.close();
-    } else {
-      this.open();
-    }
-  }
-
-  closeFromOutsideClick($event) {
-    if (this.autoClose === 'always' && $event.button !== 2 && !this._isEventFromToggle($event)) {
-      this.close();
-    }
-    if (this.autoClose === 'outsideClick' && !this._isEventFromInside($event)) {
-      this.close();
-    }
-  }
-
-  closeFromOutsideEsc() {
-    if (this.autoClose) {
-      this.close();
-    }
-  }
-
-  /**
-   * @internal
-   */
-  set toggleElement(toggleElement: any) { this._toggleElement = toggleElement; }
-
-  private _isEventFromToggle($event) { return !!this._toggleElement && this._toggleElement.contains($event.target); }
-
-  private _isEventFromInside($event) { return this._element.nativeElement.contains($event.target); }
-
-  private _registerListener() {
-    this._outsideClickListener = this._renderer.listenGlobal('document', 'click', (e) => this.closeFromOutsideClick(e));
-  }
+  isEventFrom($event) { return this._elementRef.nativeElement.contains($event.target); }
 }
 
 /**
@@ -152,9 +37,117 @@ export class NgbDropdown implements OnInit,
   }
 })
 export class NgbDropdownToggle {
-  constructor(public dropdown: NgbDropdown, elementRef: ElementRef) {
-    dropdown.toggleElement = elementRef.nativeElement;
-  }
+  constructor(@Inject(forwardRef(() => NgbDropdown)) public dropdown, private _elementRef: ElementRef) {}
 
   toggleOpen() { this.dropdown.toggle(); }
+
+  isEventFrom($event) { return this._elementRef.nativeElement.contains($event.target); }
+}
+
+/**
+ * Transforms a node into a dropdown.
+ */
+@Directive({
+  selector: '[ngbDropdown]',
+  exportAs: 'ngbDropdown',
+  host: {
+    '[class.dropdown]': '!up',
+    '[class.dropup]': 'up',
+    '[class.show]': 'isOpen()',
+    '(keyup.esc)': 'closeFromOutsideEsc()',
+    '(document:click)': 'closeFromClick($event)'
+  }
+})
+export class NgbDropdown {
+  @ContentChild(NgbDropdownMenu) private _menu: NgbDropdownMenu;
+
+  @ContentChild(NgbDropdownToggle) private _toggle: NgbDropdownToggle;
+
+  /**
+   * Indicates that the dropdown should open upwards
+   */
+  @Input() up: boolean;
+
+  /**
+   * Indicates that dropdown should be closed when selecting one of dropdown items (click) or pressing ESC.
+   * When it is true (default) dropdowns are automatically closed on both outside and inside (menu) clicks.
+   * When it is false dropdowns are never automatically closed.
+   * When it is 'outside' dropdowns are automatically closed on outside clicks but not on menu clicks.
+   * When it is 'inside' dropdowns are automatically on menu clicks but not on outside clicks.
+   */
+  @Input() autoClose: boolean | 'outside' | 'inside';
+
+  /**
+   *  Defines whether or not the dropdown-menu is open initially.
+   */
+  @Input('open') _open = false;
+
+  /**
+   *  An event fired when the dropdown is opened or closed.
+   *  Event's payload equals whether dropdown is open.
+   */
+  @Output() openChange = new EventEmitter();
+
+  constructor(config: NgbDropdownConfig) {
+    this.up = config.up;
+    this.autoClose = config.autoClose;
+  }
+
+  /**
+   * Checks if the dropdown menu is open or not.
+   */
+  isOpen(): boolean { return this._open; }
+
+  /**
+   * Opens the dropdown menu of a given navbar or tabbed navigation.
+   */
+  open(): void {
+    if (!this._open) {
+      this._open = true;
+      this.openChange.emit(true);
+    }
+  }
+
+  /**
+   * Closes the dropdown menu of a given navbar or tabbed navigation.
+   */
+  close(): void {
+    if (this._open) {
+      this._open = false;
+      this.openChange.emit(false);
+    }
+  }
+
+  /**
+   * Toggles the dropdown menu of a given navbar or tabbed navigation.
+   */
+  toggle(): void {
+    if (this.isOpen()) {
+      this.close();
+    } else {
+      this.open();
+    }
+  }
+
+  closeFromClick($event) {
+    if (this.autoClose && $event.button !== 2 && !this._isEventFromToggle($event)) {
+      if (this.autoClose === true) {
+        this.close();
+      } else if (this.autoClose === 'inside' && this._isEventFromMenu($event)) {
+        this.close();
+      } else if (this.autoClose === 'outside' && !this._isEventFromMenu($event)) {
+        this.close();
+      }
+    }
+  }
+
+  closeFromOutsideEsc() {
+    if (this.autoClose) {
+      this.close();
+    }
+  }
+
+  private _isEventFromToggle($event) { return this._toggle ? this._toggle.isEventFrom($event) : false; }
+
+  private _isEventFromMenu($event) { return this._menu ? this._menu.isEventFrom($event) : false; }
 }

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { toString } from '../util/util';
 var NgbTypeaheadWindow = (function () {
     function NgbTypeaheadWindow() {
+        this._context = { results: this._results, term: this._term, context: this };
         this.activeIdx = 0;
         /**
          * Flag indicating if the first row should be active initially
@@ -16,13 +17,42 @@ var NgbTypeaheadWindow = (function () {
          * Event raised when user selects a particular result row
          */
         this.selectEvent = new EventEmitter();
-        /**
-         * Event raised when the active link changes from either hover or keyboard up/down
-         */
         this.activeChangeEvent = new EventEmitter();
-        this.markActive = this.markActive.bind(this);
-        this.select = this.select.bind(this);
     }
+    Object.defineProperty(NgbTypeaheadWindow.prototype, "results", {
+        /**
+         * Typeahead match results to be displayed. Created as get and set so the ngOutletContext is only recreated on data
+         * changes.
+         */
+        get: function () {
+            return this._results;
+        },
+        set: function (value) {
+            this._results = value;
+            this._context.results = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(NgbTypeaheadWindow.prototype, "term", {
+        /**
+         * Search term used to get current results. Created as get and set so the ngOutletContext is only recreated on data
+         * changes.
+         */
+        get: function () {
+            return this._term;
+        },
+        set: function (value) {
+            this._term = value;
+            this._context.term = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    NgbTypeaheadWindow.prototype._getWindowContext = function () { return this._context; };
+    NgbTypeaheadWindow.prototype._getNoResultsContext = function () { return { term: this.term }; };
     NgbTypeaheadWindow.prototype.getActive = function () { return this.results[this.activeIdx]; };
     NgbTypeaheadWindow.prototype.markActive = function (activeIdx) {
         this.activeIdx = activeIdx;
@@ -65,7 +95,7 @@ NgbTypeaheadWindow.decorators = [
                 selector: 'ngb-typeahead-window',
                 exportAs: 'ngbTypeaheadWindow',
                 host: { 'class': 'dropdown-menu', 'style': 'display: block', 'role': 'listbox', '[id]': 'id' },
-                template: "\n    <ng-template *ngIf=\"windowTemplate\" #customContent [ngTemplateOutlet]=\"windowTemplate\"\n      [ngOutletContext]=\"{\n          results: results,\n          term: term,\n          activeIdx: activeIdx,\n          formatter: formatter,\n          markActive: markActive,\n          select: select\n        }\">\n    </ng-template>\n    <ng-template *ngIf=\"!windowTemplate\" #defaultContent [ngTemplateOutlet]=\"windowDefault\"\n      [ngOutletContext]=\"{\n          results: results,\n          term: term,\n          activeIdx: activeIdx,\n          formatter: formatter,\n          markActive: markActive,\n          select: select\n        }\">\n    </ng-template>\n    <ng-template #rt let-result=\"result\" let-term=\"term\" let-formatter=\"formatter\">\n      <ngb-highlight [result]=\"formatter(result)\" [term]=\"term\"></ngb-highlight>\n    </ng-template>\n    <ng-template #windowDefault let-results=\"results\"\n      let-term=\"term\"\n      let-formatter=\"formatter\"\n      let-markActive=\"markActive\"\n      let-activeIdx=\"activeIdx\"\n      let-select=\"select\">\n      <ng-container *ngFor=\"let result of results\">\n        <button type=\"button\" class=\"dropdown-item\" role=\"option\"\n          [id]=\"id + '-' + idx\"\n          [class.active]=\"idx === activeIdx\"\n          (mouseenter)=\"markActive(idx)\"\n          (click)=\"select(result)\">\n            <ng-template [ngTemplateOutlet]=\"resultTemplate || rt\"\n              [ngOutletContext]=\"{result: result, term: term, formatter: formatter}\">\n            </ng-template>\n        </button>\n      </ng-container>\n    </ng-template>\n  "
+                template: "\n    <ng-template #rt let-result=\"result\" let-term=\"term\" let-formatter=\"formatter\">\n      <ngb-highlight [result]=\"formatter(result)\" [term]=\"term\"></ngb-highlight>\n    </ng-template>\n    <ng-template #wt let-results=\"results\" let-context=\"context\">\n      <ng-template ngFor [ngForOf]=\"results\" let-result let-idx=\"index\">\n        <button type=\"button\" class=\"dropdown-item\" role=\"option\"\n          [id]=\"id + '-' + idx\"\n          [class.active]=\"idx === activeIdx\"\n          (mouseenter)=\"context.markActive(idx)\"\n          (click)=\"context.select(result)\">\n            <ng-template [ngTemplateOutlet]=\"resultTemplate || rt\"\n            [ngOutletContext]=\"{result: result, term: term, formatter: formatter}\"></ng-template>\n        </button>\n      </ng-template>\n    </ng-template>\n    <ng-template [ngTemplateOutlet]=\"windowTemplate || wt\"\n      [ngOutletContext]=\"_getWindowContext()\"> \n    </ng-template>\n    <ng-template *ngIf=\"!results || results.length === 0\"\n      [ngTemplateOutlet]=\"noResultsTemplate\"\n      [ngOutletContext]=\"_getNoResultsContext()\">\n    </ng-template>\n  "
             },] },
 ];
 /** @nocollapse */
@@ -77,6 +107,7 @@ NgbTypeaheadWindow.propDecorators = {
     'term': [{ type: Input },],
     'formatter': [{ type: Input },],
     'resultTemplate': [{ type: Input },],
+    'noResultsTemplate': [{ type: Input },],
     'windowTemplate': [{ type: Input },],
     'selectEvent': [{ type: Output, args: ['select',] },],
     'activeChangeEvent': [{ type: Output, args: ['activeChange',] },],

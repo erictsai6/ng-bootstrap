@@ -6,6 +6,7 @@ npm-debug.log
 .sw*
 .idea
 .vscode
+.history
 coverage
 demo/src/api-docs.ts
 demo/src/public/**/plnkr.html

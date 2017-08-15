@@ -3,12 +3,12 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { letProto } from 'rxjs/operator/let';
 import { _do } from 'rxjs/operator/do';
 import { fromEvent } from 'rxjs/observable/fromEvent';
-import { merge } from 'rxjs/observable/merge';
 import { positionElements } from '../util/positioning';
 import { NgbTypeaheadWindow } from './typeahead-window';
 import { PopupService } from '../util/popup';
 import { toString, isDefined } from '../util/util';
 import { NgbTypeaheadConfig } from './typeahead-config';
+import { merge } from 'rxjs/observable/merge';
 var Key;
 (function (Key) {
     Key[Key["Tab"] = 9] = "Tab";
@@ -37,10 +37,6 @@ var NgbTypeahead = (function () {
          * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
          */
         this.selectItem = new EventEmitter();
-        /**
-         * An event emitted when the window is closed
-         */
-        this.onClose = new EventEmitter();
         this.popupId = "ngb-typeahead-" + nextWindowId++;
         this._onTouched = function () { };
         this._onChange = function (_) { };
@@ -71,8 +67,8 @@ var NgbTypeahead = (function () {
                 _this._onChange(value);
             }
         });
-        this.results$ = letProto.call(inputValues$, this.ngbTypeahead);
-        var userInput$ = _do.call(this.results$, function () {
+        var results$ = letProto.call(inputValues$, this.ngbTypeahead);
+        var userInput$ = _do.call(results$, function () {
             if (!_this.editable) {
                 _this._onChange(undefined);
             }
@@ -154,11 +150,7 @@ var NgbTypeahead = (function () {
     };
     NgbTypeahead.prototype._selectResultClosePopup = function (result) {
         this._selectResult(result);
-        // ngDisabled is a feature that the result can have.
-        // If active then we will not close the popup
-        if (!result.ngDisabled) {
-            this._closePopup();
-        }
+        this._closePopup();
     };
     NgbTypeahead.prototype._showHint = function () {
         if (this.showHint) {
@@ -182,7 +174,8 @@ var NgbTypeahead = (function () {
     NgbTypeahead.prototype._subscribeToUserInput = function (userInput$) {
         var _this = this;
         return userInput$.subscribe(function (results) {
-            if (!results || results.length === 0) {
+            if ((!results || results.length === 0) &&
+                (!_this.noResultsTemplate || _this._elementRef.nativeElement.value.length === 0)) {
                 _this._closePopup();
             }
             else {
@@ -198,6 +191,9 @@ var NgbTypeahead = (function () {
                 }
                 if (_this.resultTemplate) {
                     _this._windowRef.instance.resultTemplate = _this.resultTemplate;
+                }
+                if (_this.noResultsTemplate) {
+                    _this._windowRef.instance.noResultsTemplate = _this.noResultsTemplate;
                 }
                 _this._showHint();
                 // The observable stream we are subscribing to might have async steps
@@ -253,11 +249,11 @@ NgbTypeahead.propDecorators = {
     'inputFormatter': [{ type: Input },],
     'ngbTypeahead': [{ type: Input },],
     'resultFormatter': [{ type: Input },],
-    'resultTemplate': [{ type: Input },],
     'windowTemplate': [{ type: Input },],
+    'resultTemplate': [{ type: Input },],
+    'noResultsTemplate': [{ type: Input },],
     'showHint': [{ type: Input },],
     'triggerOnFocus': [{ type: Input },],
     'selectItem': [{ type: Output },],
-    'onClose': [{ type: Output },],
 };
 //# sourceMappingURL=typeahead.js.map

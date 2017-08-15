@@ -21,12 +21,17 @@ import {Subscription} from 'rxjs/Subscription';
 import {letProto} from 'rxjs/operator/let';
 import {_do} from 'rxjs/operator/do';
 import {fromEvent} from 'rxjs/observable/fromEvent';
-import {merge} from 'rxjs/observable/merge';
 import {positionElements} from '../util/positioning';
-import {NgbTypeaheadWindow, ResultTemplateContext, WindowTemplateContext} from './typeahead-window';
+import {
+  NgbTypeaheadWindow,
+  ResultTemplateContext,
+  NoResultsTemplateContext,
+  WindowTemplateContext
+} from './typeahead-window';
 import {PopupService} from '../util/popup';
 import {toString, isDefined} from '../util/util';
 import {NgbTypeaheadConfig} from './typeahead-config';
+import {merge} from 'rxjs/observable/merge';
 
 enum Key {
   Tab = 9,
@@ -84,7 +89,6 @@ let nextWindowId = 0;
 export class NgbTypeahead implements ControlValueAccessor,
     OnInit, OnDestroy {
   private _popupService: PopupService<NgbTypeaheadWindow>;
-  private results$: Observable<any>;
   private _subscription: Subscription;
   private _userInput: string;
   private _valueChanges: Observable<string>;
@@ -121,14 +125,20 @@ export class NgbTypeahead implements ControlValueAccessor,
   @Input() resultFormatter: (value: any) => string;
 
   /**
+   * A template to override the dropdown window default display. WindowTemplate will override any result template that
+   * is set.
+   */
+  @Input() windowTemplate: TemplateRef<WindowTemplateContext>;
+
+  /**
    * A template to override a matching result default display
    */
   @Input() resultTemplate: TemplateRef<ResultTemplateContext>;
 
   /**
-   * A template to override the popup window default display
+   * A template used to display a no results message in the dropdown window
    */
-  @Input() windowTemplate: TemplateRef<WindowTemplateContext>;
+  @Input() noResultsTemplate: TemplateRef<NoResultsTemplateContext>;
 
   /**
    * Show hint when an option in the result list matches.
@@ -136,19 +146,14 @@ export class NgbTypeahead implements ControlValueAccessor,
   @Input() showHint: boolean;
 
   /**
-   * Trigger typeahead window on focus.  Automatically shows the window if the user focuses
-   */
+  * Trigger typeahead window on focus.  Automatically shows the window if the user focuses
+  */
   @Input() triggerOnFocus: boolean;
 
   /**
    * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
    */
   @Output() selectItem = new EventEmitter<NgbTypeaheadSelectItemEvent>();
-
-  /**
-   * An event emitted when the window is closed
-   */
-  @Output() onClose = new EventEmitter<any>();
 
   activeDescendant: string;
   popupId = `ngb-typeahead-${nextWindowId++}`;
@@ -184,14 +189,15 @@ export class NgbTypeahead implements ControlValueAccessor,
     } else {
       _inputChanges = this._valueChanges;
     }
+
     const inputValues$ = _do.call(_inputChanges, value => {
       this._userInput = value;
       if (this.editable) {
         this._onChange(value);
       }
     });
-    this.results$ = letProto.call(inputValues$, this.ngbTypeahead);
-    const userInput$ = _do.call(this.results$, () => {
+    const results$ = letProto.call(inputValues$, this.ngbTypeahead);
+    const userInput$ = _do.call(results$, () => {
       if (!this.editable) {
         this._onChange(undefined);
       }
@@ -287,12 +293,7 @@ export class NgbTypeahead implements ControlValueAccessor,
 
   private _selectResultClosePopup(result: any) {
     this._selectResult(result);
-
-    // ngDisabled is a feature that the result can have.
-    // If active then we will not close the popup
-    if (!result.ngDisabled) {
-      this._closePopup();
-    }
+    this._closePopup();
   }
 
   private _showHint() {
@@ -320,7 +321,8 @@ export class NgbTypeahead implements ControlValueAccessor,
 
   private _subscribeToUserInput(userInput$: Observable<any[]>): Subscription {
     return userInput$.subscribe((results) => {
-      if (!results || results.length === 0) {
+      if ((!results || results.length === 0) &&
+          (!this.noResultsTemplate || this._elementRef.nativeElement.value.length === 0)) {
         this._closePopup();
       } else {
         this._openPopup();
@@ -335,6 +337,9 @@ export class NgbTypeahead implements ControlValueAccessor,
         }
         if (this.resultTemplate) {
           this._windowRef.instance.resultTemplate = this.resultTemplate;
+        }
+        if (this.noResultsTemplate) {
+          this._windowRef.instance.noResultsTemplate = this.noResultsTemplate;
         }
         this._showHint();
 
