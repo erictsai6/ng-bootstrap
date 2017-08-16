@@ -5,7 +5,14 @@ var NgbDatepickerMonthView = (function () {
     function NgbDatepickerMonthView(i18n) {
         this.i18n = i18n;
         this.select = new EventEmitter();
+        this.doSelect = this.doSelect.bind(this);
     }
+    NgbDatepickerMonthView.prototype.buildContext = function (day) {
+        return Object.assign({}, day.context, {
+            day: day,
+            doSelect: this.doSelect
+        });
+    };
     NgbDatepickerMonthView.prototype.doSelect = function (day) {
         if (!day.context.disabled && !this.isHidden(day)) {
             this.select.emit(NgbDate.from(day.date));
@@ -24,9 +31,9 @@ export { NgbDatepickerMonthView };
 NgbDatepickerMonthView.decorators = [
     { type: Component, args: [{
                 selector: 'ngb-datepicker-month-view',
-                host: { 'class': 'd-block' },
-                styles: ["\n    .ngb-dp-weekday, .ngb-dp-week-number {\n      line-height: 2rem;\n    }\n    .ngb-dp-day, .ngb-dp-weekday, .ngb-dp-week-number {\n      width: 2rem;\n      height: 2rem;\n    }\n    .ngb-dp-day {\n      cursor: pointer;\n    }\n    .ngb-dp-day.disabled, .ngb-dp-day.hidden {\n      cursor: default;\n    }\n  "],
-                template: "\n    <div *ngIf=\"showWeekdays\" class=\"ngb-dp-week d-flex\">\n      <div *ngIf=\"showWeekNumbers\" class=\"ngb-dp-weekday\"></div>\n      <div *ngFor=\"let w of month.weekdays\" class=\"ngb-dp-weekday small text-center text-info font-italic\">\n        {{ i18n.getWeekdayShortName(w) }}\n      </div>\n    </div>\n    <ng-template ngFor let-week [ngForOf]=\"month.weeks\">\n      <div *ngIf=\"!isCollapsed(week)\" class=\"ngb-dp-week d-flex\">\n        <div *ngIf=\"showWeekNumbers\" class=\"ngb-dp-week-number small text-center font-italic text-muted\">{{ week.number }}</div>\n        <div *ngFor=\"let day of week.days\" (click)=\"doSelect(day)\" class=\"ngb-dp-day\" [class.disabled]=\"day.context.disabled\"\n         [class.hidden]=\"isHidden(day)\">\n          <ng-template [ngIf]=\"!isHidden(day)\">\n            <ng-template [ngTemplateOutlet]=\"dayTemplate\" [ngOutletContext]=\"day.context\"></ng-template>\n          </ng-template>\n        </div>\n      </div>\n    </ng-template>\n  "
+                host: { 'class': 's-calendar' },
+                styles: ["\n\n  "],
+                template: "\n    <div *ngIf=\"showWeekdays\" class=\"ngb-dp-week s-row\">\n      <div *ngIf=\"showWeekNumbers\" class=\"ngb-dp-weekday\"></div>\n      <span *ngFor=\"let w of month.weekdays\" class=\"s-calendar-day u-text-center u-text-uppercase caption\">\n        {{ i18n.getWeekdayShortName(w) }}\n      </span>\n    </div>\n    <ng-template ngFor let-week [ngForOf]=\"month.weeks\">\n      <div *ngIf=\"!isCollapsed(week)\" class=\"ngb-dp-week s-row\">\n        <div *ngIf=\"showWeekNumbers\" class=\"ngb-dp-week-number small text-center font-italic text-muted\">{{ week.number }}</div>\n        <ng-template ngFor let-day [ngForOf]=\"week.days\">\n          <ng-template [ngTemplateOutlet]=\"dayTemplate\" [ngOutletContext]=\"buildContext(day)\">\n          </ng-template>\n        </ng-template>\n      </div>\n    </ng-template>\n  "
             },] },
 ];
 /** @nocollapse */
@@ -39,6 +46,8 @@ NgbDatepickerMonthView.propDecorators = {
     'outsideDays': [{ type: Input },],
     'showWeekdays': [{ type: Input },],
     'showWeekNumbers': [{ type: Input },],
+    'minDate': [{ type: Input },],
+    'maxDate': [{ type: Input },],
     'select': [{ type: Output },],
 };
 //# sourceMappingURL=datepicker-month-view.js.map

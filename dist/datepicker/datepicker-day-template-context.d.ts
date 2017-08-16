@@ -16,6 +16,10 @@ export interface DayTemplateContext {
      */
     disabled: boolean;
     /**
+     * True if the current date is hidden
+     */
+    hidden: boolean;
+    /**
      * True if current date is focused
      */
     focused: boolean;
@@ -23,4 +27,12 @@ export interface DayTemplateContext {
      * True if current date is selected
      */
     selected: boolean;
+    /**
+     * True if the minimum date matches this date
+     */
+    minimum: boolean;
+    /**
+     * True if the maximum date matches this date
+     */
+    maximum: boolean;
 }

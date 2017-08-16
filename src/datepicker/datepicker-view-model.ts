@@ -4,6 +4,8 @@ import {DayTemplateContext} from './datepicker-day-template-context';
 
 export type NgbMarkDisabled = (date: NgbDateStruct, current: {year: number, month: number}) => boolean;
 
+export type NgbMarkHidden = (date: NgbDateStruct, current: {year: number, month: number}) => boolean;
+
 export type DayViewModel = {
   date: NgbDate,
   context: DayTemplateContext
@@ -33,6 +35,7 @@ export type DatepickerViewModel = {
   focusVisible: boolean,
   lastDate?: NgbDate,
   markDisabled?: NgbMarkDisabled,
+  markHidden?: NgbMarkHidden,
   maxDate?: NgbDate,
   minDate?: NgbDate,
   months: MonthViewModel[],

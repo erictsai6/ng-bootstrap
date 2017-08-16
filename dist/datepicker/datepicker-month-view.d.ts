@@ -10,8 +10,11 @@ export declare class NgbDatepickerMonthView {
     outsideDays: 'visible' | 'hidden' | 'collapsed';
     showWeekdays: any;
     showWeekNumbers: any;
+    minDate: NgbDate;
+    maxDate: NgbDate;
     select: EventEmitter<NgbDate>;
     constructor(i18n: NgbDatepickerI18n);
+    buildContext(day: any): any;
     doSelect(day: DayViewModel): void;
     isCollapsed(week: WeekViewModel): boolean;
     isHidden(day: DayViewModel): boolean;

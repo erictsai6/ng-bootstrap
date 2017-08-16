@@ -6,38 +6,24 @@ import {DayTemplateContext} from './datepicker-day-template-context';
 
 @Component({
   selector: 'ngb-datepicker-month-view',
-  host: {'class': 'd-block'},
+  host: {'class': 's-calendar'},
   styles: [`
-    .ngb-dp-weekday, .ngb-dp-week-number {
-      line-height: 2rem;
-    }
-    .ngb-dp-day, .ngb-dp-weekday, .ngb-dp-week-number {
-      width: 2rem;
-      height: 2rem;
-    }
-    .ngb-dp-day {
-      cursor: pointer;
-    }
-    .ngb-dp-day.disabled, .ngb-dp-day.hidden {
-      cursor: default;
-    }
+
   `],
   template: `
-    <div *ngIf="showWeekdays" class="ngb-dp-week d-flex">
+    <div *ngIf="showWeekdays" class="ngb-dp-week s-row">
       <div *ngIf="showWeekNumbers" class="ngb-dp-weekday"></div>
-      <div *ngFor="let w of month.weekdays" class="ngb-dp-weekday small text-center text-info font-italic">
+      <span *ngFor="let w of month.weekdays" class="s-calendar-day u-text-center u-text-uppercase caption">
         {{ i18n.getWeekdayShortName(w) }}
-      </div>
+      </span>
     </div>
     <ng-template ngFor let-week [ngForOf]="month.weeks">
-      <div *ngIf="!isCollapsed(week)" class="ngb-dp-week d-flex">
+      <div *ngIf="!isCollapsed(week)" class="ngb-dp-week s-row">
         <div *ngIf="showWeekNumbers" class="ngb-dp-week-number small text-center font-italic text-muted">{{ week.number }}</div>
-        <div *ngFor="let day of week.days" (click)="doSelect(day)" class="ngb-dp-day" [class.disabled]="day.context.disabled"
-         [class.hidden]="isHidden(day)">
-          <ng-template [ngIf]="!isHidden(day)">
-            <ng-template [ngTemplateOutlet]="dayTemplate" [ngOutletContext]="day.context"></ng-template>
+        <ng-template ngFor let-day [ngForOf]="week.days">
+          <ng-template [ngTemplateOutlet]="dayTemplate" [ngOutletContext]="buildContext(day)">
           </ng-template>
-        </div>
+        </ng-template>
       </div>
     </ng-template>
   `
@@ -48,10 +34,21 @@ export class NgbDatepickerMonthView {
   @Input() outsideDays: 'visible' | 'hidden' | 'collapsed';
   @Input() showWeekdays;
   @Input() showWeekNumbers;
+  @Input() minDate: NgbDate;
+  @Input() maxDate: NgbDate;
 
   @Output() select = new EventEmitter<NgbDate>();
 
-  constructor(public i18n: NgbDatepickerI18n) {}
+  constructor(public i18n: NgbDatepickerI18n) {
+    this.doSelect = this.doSelect.bind(this);
+  }
+
+  buildContext(day) {
+    return Object.assign({}, day.context, {
+      day: day,
+      doSelect: this.doSelect
+    });
+  }
 
   doSelect(day: DayViewModel) {
     if (!day.context.disabled && !this.isHidden(day)) {

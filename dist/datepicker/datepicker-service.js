@@ -70,6 +70,15 @@ var NgbDatepickerService = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(NgbDatepickerService.prototype, "markHidden", {
+        set: function (markHidden) {
+            if (this._state.markHidden !== markHidden) {
+                this._nextState({ markHidden: markHidden });
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(NgbDatepickerService.prototype, "minDate", {
         set: function (date) {
             if (date === undefined || this._calendar.isValid(date) && isChangedDate(this._state.minDate, date)) {
@@ -168,9 +177,9 @@ var NgbDatepickerService = (function () {
         }
         // rebuilding months
         if (startDate) {
-            var forceRebuild = 'firstDayOfWeek' in patch || 'markDisabled' in patch || 'minDate' in patch ||
-                'maxDate' in patch || 'disabled' in patch;
-            var months = buildMonths(this._calendar, state.months, startDate, state.minDate, state.maxDate, state.displayMonths, state.firstDayOfWeek, state.markDisabled, forceRebuild);
+            var forceRebuild = 'firstDayOfWeek' in patch || 'markDisabled' in patch || 'markHidden' in patch ||
+                'minDate' in patch || 'maxDate' in patch || 'disabled' in patch;
+            var months = buildMonths(this._calendar, state.months, startDate, state.minDate, state.maxDate, state.displayMonths, state.firstDayOfWeek, state.markDisabled, state.markHidden, forceRebuild);
             // updating months and boundary dates
             state.months = months;
             state.firstDate = months.length > 0 ? months[0].firstDate : undefined;
