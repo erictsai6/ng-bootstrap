@@ -29,8 +29,14 @@ export declare class NgbTypeahead implements ControlValueAccessor, OnInit, OnDes
     private _userInput;
     private _valueChanges;
     private _focusChanges;
+    private _resubscribeTypeahead;
     private _windowRef;
     private _zoneSubscription;
+    /**
+     * A selector specifying the element the tooltip should be appended to.
+     * Currently only supports "body".
+     */
+    container: string;
     /**
      * A flag indicating if model values should be restricted to the ones selected from the popup only.
      */

@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("@angular/core"), require("@angular/common"), require("@angular/forms"), require("rxjs/Subject"), require("rxjs/observable/fromEvent"), require("rxjs/observable/merge"), require("rxjs/operator/do"), require("rxjs/operator/filter"), require("rxjs/operator/let"));
+		module.exports = factory(require("@angular/core"), require("@angular/common"), require("@angular/forms"), require("rxjs/BehaviorSubject"), require("rxjs/Subject"), require("rxjs/observable/fromEvent"), require("rxjs/observable/merge"), require("rxjs/operator/do"), require("rxjs/operator/filter"), require("rxjs/operator/let"), require("rxjs/operator/switchMap"));
 	else if(typeof define === 'function' && define.amd)
-		define(["@angular/core", "@angular/common", "@angular/forms", "rxjs/Subject", "rxjs/observable/fromEvent", "rxjs/observable/merge", "rxjs/operator/do", "rxjs/operator/filter", "rxjs/operator/let"], factory);
+		define(["@angular/core", "@angular/common", "@angular/forms", "rxjs/BehaviorSubject", "rxjs/Subject", "rxjs/observable/fromEvent", "rxjs/observable/merge", "rxjs/operator/do", "rxjs/operator/filter", "rxjs/operator/let", "rxjs/operator/switchMap"], factory);
 	else if(typeof exports === 'object')
-		exports["ngb"] = factory(require("@angular/core"), require("@angular/common"), require("@angular/forms"), require("rxjs/Subject"), require("rxjs/observable/fromEvent"), require("rxjs/observable/merge"), require("rxjs/operator/do"), require("rxjs/operator/filter"), require("rxjs/operator/let"));
+		exports["ngb"] = factory(require("@angular/core"), require("@angular/common"), require("@angular/forms"), require("rxjs/BehaviorSubject"), require("rxjs/Subject"), require("rxjs/observable/fromEvent"), require("rxjs/observable/merge"), require("rxjs/operator/do"), require("rxjs/operator/filter"), require("rxjs/operator/let"), require("rxjs/operator/switchMap"));
 	else
-		root["ngb"] = factory(root["ng"]["core"], root["ng"]["common"], root["ng"]["forms"], root["Rx"], root["Rx"], root["Rx"], root["Rx"], root["Rx"], root["Rx"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_77__, __WEBPACK_EXTERNAL_MODULE_78__, __WEBPACK_EXTERNAL_MODULE_79__, __WEBPACK_EXTERNAL_MODULE_80__, __WEBPACK_EXTERNAL_MODULE_81__, __WEBPACK_EXTERNAL_MODULE_82__) {
+		root["ngb"] = factory(root["ng"]["core"], root["ng"]["common"], root["ng"]["forms"], root["Rx"], root["Rx"], root["Rx"], root["Rx"], root["Rx"], root["Rx"], root["Rx"], root["Rx"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_77__, __WEBPACK_EXTERNAL_MODULE_78__, __WEBPACK_EXTERNAL_MODULE_79__, __WEBPACK_EXTERNAL_MODULE_80__, __WEBPACK_EXTERNAL_MODULE_81__, __WEBPACK_EXTERNAL_MODULE_82__, __WEBPACK_EXTERNAL_MODULE_83__, __WEBPACK_EXTERNAL_MODULE_84__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 83);
+/******/ 	return __webpack_require__(__webpack_require__.s = 85);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1340,9 +1340,9 @@ var ngb_calendar_1 = __webpack_require__(3);
 var ngb_date_1 = __webpack_require__(4);
 var core_1 = __webpack_require__(0);
 var util_1 = __webpack_require__(1);
-var Subject_1 = __webpack_require__(77);
+var Subject_1 = __webpack_require__(78);
 var datepicker_tools_1 = __webpack_require__(54);
-var filter_1 = __webpack_require__(81);
+var filter_1 = __webpack_require__(82);
 var NgbDatepickerService = (function () {
     function NgbDatepickerService(_calendar) {
         this._calendar = _calendar;
@@ -5572,15 +5572,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = __webpack_require__(0);
 var forms_1 = __webpack_require__(5);
-var let_1 = __webpack_require__(82);
-var do_1 = __webpack_require__(80);
-var fromEvent_1 = __webpack_require__(78);
+var BehaviorSubject_1 = __webpack_require__(77);
+var let_1 = __webpack_require__(83);
+var do_1 = __webpack_require__(81);
+var switchMap_1 = __webpack_require__(84);
+var fromEvent_1 = __webpack_require__(79);
 var positioning_1 = __webpack_require__(9);
 var typeahead_window_1 = __webpack_require__(42);
 var popup_1 = __webpack_require__(7);
 var util_1 = __webpack_require__(1);
 var typeahead_config_1 = __webpack_require__(41);
-var merge_1 = __webpack_require__(79);
+var merge_1 = __webpack_require__(80);
 var Key;
 (function (Key) {
     Key[Key["Tab"] = 9] = "Tab";
@@ -5612,15 +5614,18 @@ var NgbTypeahead = (function () {
         this.popupId = "ngb-typeahead-" + nextWindowId++;
         this._onTouched = function () { };
         this._onChange = function (_) { };
+        this.container = config.container;
         this.editable = config.editable;
         this.focusFirst = config.focusFirst;
         this.showHint = config.showHint;
         this._valueChanges = fromEvent_1.fromEvent(_elementRef.nativeElement, 'input', function ($event) { return $event.target.value; });
         this._focusChanges = fromEvent_1.fromEvent(_elementRef.nativeElement, 'focus', function ($event) { return $event.target.value; });
+        this._focusChanges = fromEvent_1.fromEvent(_elementRef.nativeElement, 'focus', function ($event) { return $event.target.value; });
+        this._resubscribeTypeahead = new BehaviorSubject_1.BehaviorSubject(null);
         this._popupService = new popup_1.PopupService(typeahead_window_1.NgbTypeaheadWindow, _injector, _viewContainerRef, _renderer, componentFactoryResolver);
         this._zoneSubscription = ngZone.onStable.subscribe(function () {
             if (_this.isPopupOpen()) {
-                positioning_1.positionElements(_this._elementRef.nativeElement, _this._windowRef.location.nativeElement, 'bottom-left');
+                positioning_1.positionElements(_this._elementRef.nativeElement, _this._windowRef.location.nativeElement, 'bottom-left', _this.container === 'body');
             }
         });
     }
@@ -5640,14 +5645,16 @@ var NgbTypeahead = (function () {
             }
         });
         var results$ = let_1.letProto.call(inputValues$, this.ngbTypeahead);
-        var userInput$ = do_1._do.call(results$, function () {
+        var processedResults$ = do_1._do.call(results$, function () {
             if (!_this.editable) {
                 _this._onChange(undefined);
             }
         });
+        var userInput$ = switchMap_1.switchMap.call(this._resubscribeTypeahead, function () { return processedResults$; });
         this._subscription = this._subscribeToUserInput(userInput$);
     };
     NgbTypeahead.prototype.ngOnDestroy = function () {
+        this._closePopup();
         this._unsubscribeFromUserInput();
         this._zoneSubscription.unsubscribe();
     };
@@ -5664,7 +5671,10 @@ var NgbTypeahead = (function () {
         }
     };
     NgbTypeahead.prototype.isPopupOpen = function () { return this._windowRef != null; };
-    NgbTypeahead.prototype.handleBlur = function () { this._onTouched(); };
+    NgbTypeahead.prototype.handleBlur = function () {
+        this._resubscribeTypeahead.next(null);
+        this._onTouched();
+    };
     NgbTypeahead.prototype.handleKeyDown = function (event) {
         if (!this.isPopupOpen()) {
             return;
@@ -5693,6 +5703,7 @@ var NgbTypeahead = (function () {
                     break;
                 case Key.Escape:
                     event.preventDefault();
+                    this._resubscribeTypeahead.next(null);
                     this.dismissPopup();
                     break;
             }
@@ -5705,6 +5716,9 @@ var NgbTypeahead = (function () {
             this._windowRef.instance.id = this.popupId;
             this._windowRef.instance.selectEvent.subscribe(function (result) { return _this._selectResultClosePopup(result); });
             this._windowRef.instance.activeChangeEvent.subscribe(function (activeId) { return _this.activeDescendant = activeId; });
+            if (this.container === 'body') {
+                window.document.querySelector(this.container).appendChild(this._windowRef.location.nativeElement);
+            }
         }
     };
     NgbTypeahead.prototype._closePopup = function () {
@@ -5715,6 +5729,7 @@ var NgbTypeahead = (function () {
     NgbTypeahead.prototype._selectResult = function (result) {
         var defaultPrevented = false;
         this.selectItem.emit({ item: result, preventDefault: function () { defaultPrevented = true; } });
+        this._resubscribeTypeahead.next(null);
         if (!defaultPrevented) {
             this.writeValue(result);
             this._onChange(result);
@@ -5783,6 +5798,10 @@ var NgbTypeahead = (function () {
     };
     return NgbTypeahead;
 }());
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], NgbTypeahead.prototype, "container", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", Boolean)
@@ -6343,6 +6362,18 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_82__;
 
 /***/ }),
 /* 83 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_83__;
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_84__;
+
+/***/ }),
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
