@@ -51,7 +51,8 @@ export interface NoResultsTemplateContext {
 @Component({
   selector: 'ngb-typeahead-window',
   exportAs: 'ngbTypeaheadWindow',
-  host: {'class': 'dropdown-menu', 'style': 'display: block', 'role': 'listbox', '[id]': 'id'},
+  // (schoi) s-dropdown-menu is our proprietary class for dropdowns
+  host: {'class': 's-dropdown-menu', 'style': 'display: block', 'role': 'listbox', '[id]': 'id'},
   template: `
     <ng-template #rt let-result="result" let-term="term" let-formatter="formatter">
       <ngb-highlight [result]="formatter(result)" [term]="term"></ngb-highlight>
