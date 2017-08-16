@@ -6,31 +6,19 @@ import {DayTemplateContext} from './datepicker-day-template-context';
 
 @Component({
   selector: 'ngb-datepicker-month-view',
-  host: {'class': 'd-block'},
+  host: {'class': 's-calendar'},
   styles: [`
-    .ngb-dp-weekday, .ngb-dp-week-number {
-      line-height: 2rem;
-    }
-    .ngb-dp-day, .ngb-dp-weekday, .ngb-dp-week-number {
-      width: 2rem;
-      height: 2rem;
-    }
-    .ngb-dp-day {
-      cursor: pointer;
-    }
-    .ngb-dp-day.disabled, .ngb-dp-day.hidden {
-      cursor: default;
-    }
+
   `],
   template: `
-    <div *ngIf="showWeekdays" class="ngb-dp-week d-flex">
+    <div *ngIf="showWeekdays" class="ngb-dp-week s-row">
       <div *ngIf="showWeekNumbers" class="ngb-dp-weekday"></div>
       <div *ngFor="let w of month.weekdays" class="ngb-dp-weekday small text-center text-info font-italic">
         {{ i18n.getWeekdayShortName(w) }}
       </div>
     </div>
     <ng-template ngFor let-week [ngForOf]="month.weeks">
-      <div *ngIf="!isCollapsed(week)" class="ngb-dp-week d-flex">
+      <div *ngIf="!isCollapsed(week)" class="ngb-dp-week s-row">
         <div *ngIf="showWeekNumbers" class="ngb-dp-week-number small text-center font-italic text-muted">{{ week.number }}</div>
         <div *ngFor="let day of week.days" (click)="doSelect(day)" class="ngb-dp-day" [class.disabled]="day.context.disabled"
          [class.hidden]="isHidden(day)">
