@@ -153,4 +153,8 @@ export function positionElements(
 
   targetElement.style.top = `${pos.top}px`;
   targetElement.style.left = `${pos.left}px`;
+
+  if (appendToBody) {
+    targetElement.style.maxWidth = `${hostElement.getBoundingClientRect().width}px`;
+  }
 }

@@ -134,5 +134,8 @@ export function positionElements(hostElement, targetElement, placement, appendTo
     var pos = positionService.positionElements(hostElement, targetElement, placement, appendToBody);
     targetElement.style.top = pos.top + "px";
     targetElement.style.left = pos.left + "px";
+    if (appendToBody) {
+        targetElement.style.maxWidth = hostElement.getBoundingClientRect().width + "px";
+    }
 }
 //# sourceMappingURL=positioning.js.map
