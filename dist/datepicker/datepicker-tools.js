@@ -33,13 +33,13 @@ export function isDateSelectable(months, date) {
     }
     return selectable;
 }
-export function buildMonths(calendar, months, date, minDate, maxDate, displayMonths, firstDayOfWeek, markDisabled, force) {
+export function buildMonths(calendar, months, date, minDate, maxDate, displayMonths, firstDayOfWeek, markDisabled, markHidden, force) {
     var newMonths = [];
     var _loop_1 = function (i) {
         var newDate = calendar.getNext(date, 'm', i);
         var index = months.findIndex(function (month) { return month.firstDate.equals(newDate); });
         if (force || index === -1) {
-            newMonths.push(buildMonth(calendar, newDate, minDate, maxDate, firstDayOfWeek, markDisabled));
+            newMonths.push(buildMonth(calendar, newDate, minDate, maxDate, firstDayOfWeek, markDisabled, markHidden));
         }
         else {
             newMonths.push(months[index]);
@@ -50,7 +50,7 @@ export function buildMonths(calendar, months, date, minDate, maxDate, displayMon
     }
     return newMonths;
 }
-export function buildMonth(calendar, date, minDate, maxDate, firstDayOfWeek, markDisabled) {
+export function buildMonth(calendar, date, minDate, maxDate, firstDayOfWeek, markDisabled, markHidden) {
     var month = { firstDate: null, lastDate: null, number: date.month, year: date.year, weeks: [], weekdays: [] };
     date = getFirstViewDate(calendar, date, firstDayOfWeek);
     // month has weeks
@@ -68,6 +68,11 @@ export function buildMonth(calendar, date, minDate, maxDate, firstDayOfWeek, mar
             if (!disabled && markDisabled) {
                 disabled = markDisabled(newDate, { month: month.number, year: month.year });
             }
+            var hidden = false;
+            // marking date as hidden
+            if (markHidden) {
+                hidden = markHidden(newDate, { month: month.number, year: month.year });
+            }
             // saving first date of the month
             if (month.firstDate === null && newDate.month === month.number) {
                 month.firstDate = newDate;
@@ -82,8 +87,11 @@ export function buildMonth(calendar, date, minDate, maxDate, firstDayOfWeek, mar
                     date: { year: newDate.year, month: newDate.month, day: newDate.day },
                     currentMonth: month.number,
                     disabled: disabled,
+                    hidden: hidden,
                     focused: false,
-                    selected: false
+                    selected: false,
+                    minimum: minDate && minDate.equals(newDate),
+                    maximum: maxDate && maxDate.equals(newDate)
                 }
             });
             date = nextDate;

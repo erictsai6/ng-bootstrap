@@ -14,6 +14,10 @@ export declare class NgbDatepickerConfig {
         year: number;
         month: number;
     }) => boolean;
+    markHidden: (date: NgbDateStruct, current: {
+        year: number;
+        month: number;
+    }) => boolean;
     minDate: NgbDateStruct;
     maxDate: NgbDateStruct;
     navigation: 'select' | 'arrows' | 'none';

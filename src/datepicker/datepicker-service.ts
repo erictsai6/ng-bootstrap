@@ -53,6 +53,12 @@ export class NgbDatepickerService {
     }
   }
 
+  set markHidden(markHidden: NgbMarkDisabled) {
+    if (this._state.markHidden !== markHidden) {
+      this._nextState({markHidden: markHidden});
+    }
+  }
+
   set minDate(date: NgbDate) {
     if (date === undefined || this._calendar.isValid(date) && isChangedDate(this._state.minDate, date)) {
       this._nextState({minDate: date});
@@ -168,12 +174,12 @@ export class NgbDatepickerService {
 
     // rebuilding months
     if (startDate) {
-      const forceRebuild = 'firstDayOfWeek' in patch || 'markDisabled' in patch || 'minDate' in patch ||
-          'maxDate' in patch || 'disabled' in patch;
+      const forceRebuild = 'firstDayOfWeek' in patch || 'markDisabled' in patch || 'markHidden' in patch ||
+          'minDate' in patch || 'maxDate' in patch || 'disabled' in patch;
 
       const months = buildMonths(
           this._calendar, state.months, startDate, state.minDate, state.maxDate, state.displayMonths,
-          state.firstDayOfWeek, state.markDisabled, forceRebuild);
+          state.firstDayOfWeek, state.markDisabled, state.markHidden, forceRebuild);
 
       // updating months and boundary dates
       state.months = months;

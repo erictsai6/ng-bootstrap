@@ -1,5 +1,5 @@
 import {NgbDate} from './ngb-date';
-import {DayViewModel, MonthViewModel, NgbMarkDisabled} from './datepicker-view-model';
+import { DayViewModel, MonthViewModel, NgbMarkDisabled, NgbMarkHidden } from './datepicker-view-model';
 import {NgbCalendar} from './ngb-calendar';
 
 export function isChangedDate(prev: NgbDate, next: NgbDate) {
@@ -45,14 +45,15 @@ export function isDateSelectable(months: MonthViewModel[], date: NgbDate) {
 
 export function buildMonths(
     calendar: NgbCalendar, months: MonthViewModel[], date: NgbDate, minDate: NgbDate, maxDate: NgbDate,
-    displayMonths: number, firstDayOfWeek: number, markDisabled: NgbMarkDisabled, force: boolean): MonthViewModel[] {
+    displayMonths: number, firstDayOfWeek: number, markDisabled: NgbMarkDisabled, markHidden: NgbMarkHidden,
+    force: boolean): MonthViewModel[] {
   const newMonths = [];
   for (let i = 0; i < displayMonths; i++) {
     const newDate = calendar.getNext(date, 'm', i);
     const index = months.findIndex(month => month.firstDate.equals(newDate));
 
     if (force || index === -1) {
-      newMonths.push(buildMonth(calendar, newDate, minDate, maxDate, firstDayOfWeek, markDisabled));
+      newMonths.push(buildMonth(calendar, newDate, minDate, maxDate, firstDayOfWeek, markDisabled, markHidden));
     } else {
       newMonths.push(months[index]);
     }
@@ -63,7 +64,7 @@ export function buildMonths(
 
 export function buildMonth(
     calendar: NgbCalendar, date: NgbDate, minDate: NgbDate, maxDate: NgbDate, firstDayOfWeek: number,
-    markDisabled: NgbMarkDisabled): MonthViewModel {
+    markDisabled: NgbMarkDisabled, markHidden: NgbMarkHidden): MonthViewModel {
   const month:
       MonthViewModel = {firstDate: null, lastDate: null, number: date.month, year: date.year, weeks: [], weekdays: []};
 
@@ -88,6 +89,12 @@ export function buildMonth(
         disabled = markDisabled(newDate, {month: month.number, year: month.year});
       }
 
+      let hidden = false;
+      // marking date as hidden
+      if (markHidden) {
+        hidden = markHidden(newDate, {month: month.number, year: month.year});
+      }
+
       // saving first date of the month
       if (month.firstDate === null && newDate.month === month.number) {
         month.firstDate = newDate;
@@ -104,8 +111,11 @@ export function buildMonth(
           date: {year: newDate.year, month: newDate.month, day: newDate.day},
           currentMonth: month.number,
           disabled: disabled,
+          hidden: hidden,
           focused: false,
-          selected: false
+          selected: false,
+          minimum: minDate && minDate.equals(newDate),
+          maximum: maxDate && maxDate.equals(newDate)
         }
       });
 

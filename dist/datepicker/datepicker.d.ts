@@ -56,6 +56,14 @@ export declare class NgbDatepicker implements OnDestroy, OnChanges, OnInit, Cont
      * Callback to mark a given date as disabled.
      * 'Current' contains the month that will be displayed in the view
      */
+    markHidden: (date: NgbDateStruct, current: {
+        year: number;
+        month: number;
+    }) => boolean;
+    /**
+     * Callback to mark a given date as disabled.
+     * 'Current' contains the month that will be displayed in the view
+     */
     markDisabled: (date: NgbDateStruct, current: {
         year: number;
         month: number;

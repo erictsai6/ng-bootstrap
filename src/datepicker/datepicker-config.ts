@@ -13,6 +13,7 @@ export class NgbDatepickerConfig {
   displayMonths = 1;
   firstDayOfWeek = 1;
   markDisabled: (date: NgbDateStruct, current: {year: number, month: number}) => boolean;
+  markHidden: (date: NgbDateStruct, current: {year: number, month: number}) => boolean;
   minDate: NgbDateStruct;
   maxDate: NgbDateStruct;
   navigation: 'select' | 'arrows' | 'none' = 'select';

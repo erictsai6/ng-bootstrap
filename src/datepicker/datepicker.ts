@@ -64,12 +64,6 @@ export interface NgbDatepickerNavigateEvent {
     '(keydown)': 'onKeyDown($event)'
   },
   styles: [`
-    :host {
-      border: 1px solid rgba(0, 0, 0, 0.125);
-    }
-    .ngb-dp-header {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-    }
     .ngb-dp-month {
       pointer-events: none;
     }
@@ -79,14 +73,17 @@ export interface NgbDatepickerNavigateEvent {
     .ngb-dp-month:first-child {
       margin-left: 0 !important;
     }
-    .ngb-dp-month-name {
-      font-size: larger;
-      height: 2rem;
-      line-height: 2rem;
-    }
   `],
   template: `
-    <ng-template #dt let-date="date" let-currentMonth="currentMonth" let-selected="selected" let-disabled="disabled" let-focused="focused">
+    <ng-template #dt let-date="date"
+      let-currentMonth="currentMonth"
+      let-selected="selected"
+      let-disabled="disabled"
+      let-minimum="minimum"
+      let-maximum="maximum"
+      let-day="day"
+      let-doSelect="doSelect"
+      let-focused="focused">
       <div ngbDatepickerDayView
         [date]="date"
         [currentMonth]="currentMonth"
@@ -114,11 +111,14 @@ export interface NgbDatepickerNavigateEvent {
     <div class="ngb-dp-months d-flex px-1 pb-1">
       <ng-template ngFor let-month [ngForOf]="model.months" let-i="index">
         <div class="ngb-dp-month d-block ml-3">
-          <div *ngIf="navigation !== 'select' || displayMonths > 1" class="ngb-dp-month-name text-center">
+          <p *ngIf="navigation !== 'select' || displayMonths > 1"
+            class="s-calendar-day u-text-center">
             {{ i18n.getMonthFullName(month.number) }} {{ month.year }}
-          </div>
+          </p>
           <ngb-datepicker-month-view
             [month]="month"
+            [minDate]="model.minDate"
+            [maxDate]="model.maxDate"
             [dayTemplate]="dayTemplate || dt"
             [showWeekdays]="showWeekdays"
             [showWeekNumbers]="showWeekNumbers"
@@ -150,6 +150,12 @@ export class NgbDatepicker implements OnDestroy,
    * First day of the week. With default calendar we use ISO 8601: 'weekday' is 1=Mon ... 7=Sun
    */
   @Input() firstDayOfWeek: number;
+
+  /**
+   * Callback to mark a given date as disabled.
+   * 'Current' contains the month that will be displayed in the view
+   */
+  @Input() markHidden: (date: NgbDateStruct, current: {year: number, month: number}) => boolean;
 
   /**
    * Callback to mark a given date as disabled.
@@ -214,6 +220,7 @@ export class NgbDatepicker implements OnDestroy,
     this.displayMonths = config.displayMonths;
     this.firstDayOfWeek = config.firstDayOfWeek;
     this.markDisabled = config.markDisabled;
+    this.markHidden = config.markHidden;
     this.minDate = config.minDate;
     this.maxDate = config.maxDate;
     this.navigation = config.navigation;
@@ -229,6 +236,7 @@ export class NgbDatepicker implements OnDestroy,
       const oldSelectedDate = this.model ? this.model.selectedDate : null;
 
       this.model = model;
+      console.log(this.model);
 
       // handling selection change
       if (isChangedDate(newSelectedDate, oldSelectedDate)) {
@@ -280,6 +288,7 @@ export class NgbDatepicker implements OnDestroy,
     if (this.model === undefined) {
       this._service.displayMonths = toInteger(this.displayMonths);
       this._service.markDisabled = this.markDisabled;
+      this._service.markHidden = this.markHidden;
       this._service.firstDayOfWeek = this.firstDayOfWeek;
       this._setDates();
     }
@@ -291,6 +300,9 @@ export class NgbDatepicker implements OnDestroy,
     }
     if (changes['markDisabled']) {
       this._service.markDisabled = this.markDisabled;
+    }
+    if (changes['markHidden']) {
+      this._service.markHidden = this.markHidden;
     }
     if (changes['firstDayOfWeek']) {
       this._service.firstDayOfWeek = this.firstDayOfWeek;

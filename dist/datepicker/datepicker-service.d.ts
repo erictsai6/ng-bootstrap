@@ -12,6 +12,7 @@ export declare class NgbDatepickerService {
     focusVisible: boolean;
     maxDate: NgbDate;
     markDisabled: NgbMarkDisabled;
+    markHidden: NgbMarkDisabled;
     minDate: NgbDate;
     constructor(_calendar: NgbCalendar);
     focus(date: NgbDate): void;
