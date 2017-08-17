@@ -47,7 +47,7 @@
     "url": "https://github.com/ng-bootstrap/ng-bootstrap/issues"
   },
   "homepage": "https://github.com/ng-bootstrap/ng-bootstrap#readme",
-  "dependencies": {
+  "peerDependencies": {
     "@angular/core": "4.0.3",
     "@angular/common": "4.0.3",
     "@angular/forms": "4.0.3"
