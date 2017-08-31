@@ -18,6 +18,7 @@ import {
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import {letProto} from 'rxjs/operator/let';
 import {_do} from 'rxjs/operator/do';
@@ -95,6 +96,8 @@ export class NgbTypeahead implements ControlValueAccessor,
   private _userInput: string;
   private _valueChanges: Observable<string>;
   private _focusChanges: Observable<string>;
+
+  private _typeaheadSubject: Subject<any>;
   private _resubscribeTypeahead: BehaviorSubject<any>;
   private _windowRef: ComponentRef<NgbTypeaheadWindow>;
   private _zoneSubscription: any;
@@ -164,6 +167,11 @@ export class NgbTypeahead implements ControlValueAccessor,
    */
   @Output() selectItem = new EventEmitter<NgbTypeaheadSelectItemEvent>();
 
+  /**
+   * A callback to expose the BehaviorSubject so that we can trigger it ourselves
+   */
+  @Output() exposeTypeaheadSubject = new EventEmitter<any>();
+
   activeDescendant: string;
   popupId = `ngb-typeahead-${nextWindowId++}`;
 
@@ -181,8 +189,8 @@ export class NgbTypeahead implements ControlValueAccessor,
 
     this._valueChanges = fromEvent(_elementRef.nativeElement, 'input', ($event) => $event.target.value);
     this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', ($event) => $event.target.value);
-    this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', ($event) => $event.target.value);
 
+    this._typeaheadSubject = new Subject();
     this._resubscribeTypeahead = new BehaviorSubject(null);
 
     this._popupService = new PopupService<NgbTypeaheadWindow>(
@@ -198,9 +206,11 @@ export class NgbTypeahead implements ControlValueAccessor,
   }
 
   ngOnInit(): void {
+    this.exposeTypeaheadSubject.emit(this._typeaheadSubject);
+
     let _inputChanges;
     if (this.triggerOnFocus) {
-      _inputChanges = merge(this._focusChanges, this._valueChanges);
+      _inputChanges = merge(this._focusChanges, this._valueChanges, this._typeaheadSubject);
     } else {
       _inputChanges = this._valueChanges;
     }
@@ -319,7 +329,10 @@ export class NgbTypeahead implements ControlValueAccessor,
 
   private _selectResultClosePopup(result: any) {
     this._selectResult(result);
-    this._closePopup();
+
+    if (!result.ngDisabled) {
+      this._closePopup();
+    }
   }
 
   private _showHint() {

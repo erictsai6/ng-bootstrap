@@ -236,7 +236,6 @@ export class NgbDatepicker implements OnDestroy,
       const oldSelectedDate = this.model ? this.model.selectedDate : null;
 
       this.model = model;
-      console.log(this.model);
 
       // handling selection change
       if (isChangedDate(newSelectedDate, oldSelectedDate)) {

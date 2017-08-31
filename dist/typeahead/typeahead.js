@@ -1,6 +1,7 @@
 import { ComponentFactoryResolver, Directive, ElementRef, EventEmitter, forwardRef, Injector, Input, NgZone, Output, Renderer2, ViewContainerRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
 import { letProto } from 'rxjs/operator/let';
 import { _do } from 'rxjs/operator/do';
 import { switchMap } from 'rxjs/operator/switchMap';
@@ -39,6 +40,10 @@ var NgbTypeahead = (function () {
          * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
          */
         this.selectItem = new EventEmitter();
+        /**
+         * A callback to expose the BehaviorSubject so that we can trigger it ourselves
+         */
+        this.exposeTypeaheadSubject = new EventEmitter();
         this.popupId = "ngb-typeahead-" + nextWindowId++;
         this._onTouched = function () { };
         this._onChange = function (_) { };
@@ -48,7 +53,7 @@ var NgbTypeahead = (function () {
         this.showHint = config.showHint;
         this._valueChanges = fromEvent(_elementRef.nativeElement, 'input', function ($event) { return $event.target.value; });
         this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', function ($event) { return $event.target.value; });
-        this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', function ($event) { return $event.target.value; });
+        this._typeaheadSubject = new Subject();
         this._resubscribeTypeahead = new BehaviorSubject(null);
         this._popupService = new PopupService(NgbTypeaheadWindow, _injector, _viewContainerRef, _renderer, componentFactoryResolver);
         this._zoneSubscription = ngZone.onStable.subscribe(function () {
@@ -59,9 +64,10 @@ var NgbTypeahead = (function () {
     }
     NgbTypeahead.prototype.ngOnInit = function () {
         var _this = this;
+        this.exposeTypeaheadSubject.emit(this._typeaheadSubject);
         var _inputChanges;
         if (this.triggerOnFocus) {
-            _inputChanges = merge(this._focusChanges, this._valueChanges);
+            _inputChanges = merge(this._focusChanges, this._valueChanges, this._typeaheadSubject);
         }
         else {
             _inputChanges = this._valueChanges;
@@ -165,7 +171,9 @@ var NgbTypeahead = (function () {
     };
     NgbTypeahead.prototype._selectResultClosePopup = function (result) {
         this._selectResult(result);
-        this._closePopup();
+        if (!result.ngDisabled) {
+            this._closePopup();
+        }
     };
     NgbTypeahead.prototype._showHint = function () {
         if (this.showHint) {
@@ -271,5 +279,6 @@ NgbTypeahead.propDecorators = {
     'showHint': [{ type: Input },],
     'triggerOnFocus': [{ type: Input },],
     'selectItem': [{ type: Output },],
+    'exposeTypeaheadSubject': [{ type: Output },],
 };
 //# sourceMappingURL=typeahead.js.map

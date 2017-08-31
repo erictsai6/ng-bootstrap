@@ -51,7 +51,6 @@ var NgbDatepicker = (function () {
             var newSelectedDate = model.selectedDate;
             var oldSelectedDate = _this.model ? _this.model.selectedDate : null;
             _this.model = model;
-            console.log(_this.model);
             // handling selection change
             if (isChangedDate(newSelectedDate, oldSelectedDate)) {
                 _this.onTouched();
