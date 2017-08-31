@@ -84,6 +84,10 @@ export declare class NgbTypeahead implements ControlValueAccessor, OnInit, OnDes
      * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
      */
     selectItem: EventEmitter<NgbTypeaheadSelectItemEvent>;
+    /**
+     * A callback to expose the BehaviorSubject so that we can trigger it ourselves
+     */
+    exposeTypeaheadSubject: EventEmitter<any>;
     activeDescendant: string;
     popupId: string;
     private _onTouched;

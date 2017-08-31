@@ -95,6 +95,7 @@ export class NgbTypeahead implements ControlValueAccessor,
   private _userInput: string;
   private _valueChanges: Observable<string>;
   private _focusChanges: Observable<string>;
+
   private _resubscribeTypeahead: BehaviorSubject<any>;
   private _windowRef: ComponentRef<NgbTypeaheadWindow>;
   private _zoneSubscription: any;
@@ -164,6 +165,11 @@ export class NgbTypeahead implements ControlValueAccessor,
    */
   @Output() selectItem = new EventEmitter<NgbTypeaheadSelectItemEvent>();
 
+  /**
+   * A callback to expose the BehaviorSubject so that we can trigger it ourselves
+   */
+  @Output() exposeTypeaheadSubject = new EventEmitter<any>();
+
   activeDescendant: string;
   popupId = `ngb-typeahead-${nextWindowId++}`;
 
@@ -181,9 +187,9 @@ export class NgbTypeahead implements ControlValueAccessor,
 
     this._valueChanges = fromEvent(_elementRef.nativeElement, 'input', ($event) => $event.target.value);
     this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', ($event) => $event.target.value);
-    this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', ($event) => $event.target.value);
 
     this._resubscribeTypeahead = new BehaviorSubject(null);
+    this.exposeTypeaheadSubject.emit(this._resubscribeTypeahead);
 
     this._popupService = new PopupService<NgbTypeaheadWindow>(
         NgbTypeaheadWindow, _injector, _viewContainerRef, _renderer, componentFactoryResolver);
@@ -319,7 +325,10 @@ export class NgbTypeahead implements ControlValueAccessor,
 
   private _selectResultClosePopup(result: any) {
     this._selectResult(result);
-    this._closePopup();
+
+    if (!result.ngDisabled) {
+      this._closePopup();
+    }
   }
 
   private _showHint() {

@@ -39,6 +39,10 @@ var NgbTypeahead = (function () {
          * An event emitted when a match is selected. Event payload is of type NgbTypeaheadSelectItemEvent.
          */
         this.selectItem = new EventEmitter();
+        /**
+         * A callback to expose the BehaviorSubject so that we can trigger it ourselves
+         */
+        this.exposeTypeaheadSubject = new EventEmitter();
         this.popupId = "ngb-typeahead-" + nextWindowId++;
         this._onTouched = function () { };
         this._onChange = function (_) { };
@@ -48,8 +52,8 @@ var NgbTypeahead = (function () {
         this.showHint = config.showHint;
         this._valueChanges = fromEvent(_elementRef.nativeElement, 'input', function ($event) { return $event.target.value; });
         this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', function ($event) { return $event.target.value; });
-        this._focusChanges = fromEvent(_elementRef.nativeElement, 'focus', function ($event) { return $event.target.value; });
         this._resubscribeTypeahead = new BehaviorSubject(null);
+        this.exposeTypeaheadSubject.emit(this._resubscribeTypeahead);
         this._popupService = new PopupService(NgbTypeaheadWindow, _injector, _viewContainerRef, _renderer, componentFactoryResolver);
         this._zoneSubscription = ngZone.onStable.subscribe(function () {
             if (_this.isPopupOpen()) {
@@ -165,7 +169,9 @@ var NgbTypeahead = (function () {
     };
     NgbTypeahead.prototype._selectResultClosePopup = function (result) {
         this._selectResult(result);
-        this._closePopup();
+        if (!result.ngDisabled) {
+            this._closePopup();
+        }
     };
     NgbTypeahead.prototype._showHint = function () {
         if (this.showHint) {
@@ -271,5 +277,6 @@ NgbTypeahead.propDecorators = {
     'showHint': [{ type: Input },],
     'triggerOnFocus': [{ type: Input },],
     'selectItem': [{ type: Output },],
+    'exposeTypeaheadSubject': [{ type: Output },],
 };
 //# sourceMappingURL=typeahead.js.map
