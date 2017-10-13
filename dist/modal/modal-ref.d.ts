@@ -43,5 +43,5 @@ export declare class NgbModalRef {
      * Can be used to dismiss a modal, passing an optional reason.
      */
     dismiss(reason?: any): void;
-    private _removeModalElements();
+    private _removeModalElements(reason?);
 }

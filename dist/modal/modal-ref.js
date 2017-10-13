@@ -69,24 +69,29 @@ var NgbModalRef = (function () {
     NgbModalRef.prototype.dismiss = function (reason) {
         if (this._windowCmptRef) {
             this._reject(reason);
-            this._removeModalElements();
+            this._removeModalElements(reason);
         }
     };
-    NgbModalRef.prototype._removeModalElements = function () {
+    NgbModalRef.prototype._removeModalElements = function (reason) {
+        var _this = this;
         var windowNativeEl = this._windowCmptRef.location.nativeElement;
-        windowNativeEl.parentNode.removeChild(windowNativeEl);
-        this._windowCmptRef.destroy();
-        if (this._backdropCmptRef) {
-            var backdropNativeEl = this._backdropCmptRef.location.nativeElement;
-            backdropNativeEl.parentNode.removeChild(backdropNativeEl);
-            this._backdropCmptRef.destroy();
-        }
-        if (this._contentRef && this._contentRef.viewRef) {
-            this._contentRef.viewRef.destroy();
-        }
-        this._windowCmptRef = null;
-        this._backdropCmptRef = null;
-        this._contentRef = null;
+        windowNativeEl.classList.remove('show');
+        var delay = (reason && reason.reason === 'AUTOCLOSE') ? 0 : 250;
+        setTimeout(function () {
+            windowNativeEl.parentNode.removeChild(windowNativeEl);
+            _this._windowCmptRef.destroy();
+            if (_this._backdropCmptRef) {
+                var backdropNativeEl = _this._backdropCmptRef.location.nativeElement;
+                backdropNativeEl.parentNode.removeChild(backdropNativeEl);
+                _this._backdropCmptRef.destroy();
+            }
+            if (_this._contentRef && _this._contentRef.viewRef) {
+                _this._contentRef.viewRef.destroy();
+            }
+            _this._windowCmptRef = null;
+            _this._backdropCmptRef = null;
+            _this._contentRef = null;
+        }, delay);
     };
     return NgbModalRef;
 }());

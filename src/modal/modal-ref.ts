@@ -76,27 +76,33 @@ export class NgbModalRef {
   dismiss(reason?: any): void {
     if (this._windowCmptRef) {
       this._reject(reason);
-      this._removeModalElements();
+      this._removeModalElements(reason);
     }
   }
 
-  private _removeModalElements() {
+  private _removeModalElements(reason?: any) {
     const windowNativeEl = this._windowCmptRef.location.nativeElement;
-    windowNativeEl.parentNode.removeChild(windowNativeEl);
-    this._windowCmptRef.destroy();
 
-    if (this._backdropCmptRef) {
-      const backdropNativeEl = this._backdropCmptRef.location.nativeElement;
-      backdropNativeEl.parentNode.removeChild(backdropNativeEl);
-      this._backdropCmptRef.destroy();
-    }
+    windowNativeEl.classList.remove('show');
+    const delay = (reason && reason.reason === 'AUTOCLOSE') ? 0 : 250;
 
-    if (this._contentRef && this._contentRef.viewRef) {
-      this._contentRef.viewRef.destroy();
-    }
+    setTimeout(() => {
+      windowNativeEl.parentNode.removeChild(windowNativeEl);
+      this._windowCmptRef.destroy();
 
-    this._windowCmptRef = null;
-    this._backdropCmptRef = null;
-    this._contentRef = null;
+      if (this._backdropCmptRef) {
+        const backdropNativeEl = this._backdropCmptRef.location.nativeElement;
+        backdropNativeEl.parentNode.removeChild(backdropNativeEl);
+        this._backdropCmptRef.destroy();
+      }
+
+      if (this._contentRef && this._contentRef.viewRef) {
+        this._contentRef.viewRef.destroy();
+      }
+
+      this._windowCmptRef = null;
+      this._backdropCmptRef = null;
+      this._contentRef = null;
+    }, delay);
   }
 }
