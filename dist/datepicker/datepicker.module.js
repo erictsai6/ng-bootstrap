@@ -35,20 +35,20 @@ var NgbDatepickerModule = (function () {
             ]
         };
     };
+    NgbDatepickerModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [
+                        NgbDatepicker, NgbDatepickerMonthView, NgbDatepickerNavigation, NgbDatepickerNavigationSelect, NgbDatepickerDayView,
+                        NgbInputDatepicker
+                    ],
+                    exports: [NgbDatepicker, NgbInputDatepicker],
+                    imports: [CommonModule, FormsModule],
+                    entryComponents: [NgbDatepicker]
+                },] },
+    ];
+    /** @nocollapse */
+    NgbDatepickerModule.ctorParameters = function () { return []; };
     return NgbDatepickerModule;
 }());
 export { NgbDatepickerModule };
-NgbDatepickerModule.decorators = [
-    { type: NgModule, args: [{
-                declarations: [
-                    NgbDatepicker, NgbDatepickerMonthView, NgbDatepickerNavigation, NgbDatepickerNavigationSelect, NgbDatepickerDayView,
-                    NgbInputDatepicker
-                ],
-                exports: [NgbDatepicker, NgbInputDatepicker],
-                imports: [CommonModule, FormsModule],
-                entryComponents: [NgbDatepicker]
-            },] },
-];
-/** @nocollapse */
-NgbDatepickerModule.ctorParameters = function () { return []; };
 //# sourceMappingURL=datepicker.module.js.map

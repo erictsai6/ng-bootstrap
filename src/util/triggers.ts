@@ -52,7 +52,8 @@ export function listenToTriggers(renderer: any, nativeElement: any, triggers: st
       listeners.push(renderer.listen(nativeElement, trigger.open, toggleFn));
     } else {
       listeners.push(
-          renderer.listen(nativeElement, trigger.open, openFn), renderer.listen(nativeElement, trigger.close, closeFn));
+          renderer.listen(nativeElement, trigger.open, openFn),
+          renderer.listen(nativeElement, trigger.close, closeFn));
     }
   });
 

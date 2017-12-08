@@ -1,4 +1,4 @@
-import { Component, ContentChild, ContentChildren, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, ContentChild, ContentChildren, Directive, EventEmitter, Input, Output, QueryList, TemplateRef } from '@angular/core';
 import { isString } from '../util/util';
 import { NgbAccordionConfig } from './accordion-config';
 var nextId = 0;
@@ -9,16 +9,16 @@ var NgbPanelTitle = (function () {
     function NgbPanelTitle(templateRef) {
         this.templateRef = templateRef;
     }
+    NgbPanelTitle.decorators = [
+        { type: Directive, args: [{ selector: 'ng-template[ngbPanelTitle]' },] },
+    ];
+    /** @nocollapse */
+    NgbPanelTitle.ctorParameters = function () { return [
+        { type: TemplateRef, },
+    ]; };
     return NgbPanelTitle;
 }());
 export { NgbPanelTitle };
-NgbPanelTitle.decorators = [
-    { type: Directive, args: [{ selector: 'ng-template[ngbPanelTitle]' },] },
-];
-/** @nocollapse */
-NgbPanelTitle.ctorParameters = function () { return [
-    { type: TemplateRef, },
-]; };
 /**
  * This directive must be used to wrap accordion panel content.
  */
@@ -26,16 +26,16 @@ var NgbPanelContent = (function () {
     function NgbPanelContent(templateRef) {
         this.templateRef = templateRef;
     }
+    NgbPanelContent.decorators = [
+        { type: Directive, args: [{ selector: 'ng-template[ngbPanelContent]' },] },
+    ];
+    /** @nocollapse */
+    NgbPanelContent.ctorParameters = function () { return [
+        { type: TemplateRef, },
+    ]; };
     return NgbPanelContent;
 }());
 export { NgbPanelContent };
-NgbPanelContent.decorators = [
-    { type: Directive, args: [{ selector: 'ng-template[ngbPanelContent]' },] },
-];
-/** @nocollapse */
-NgbPanelContent.ctorParameters = function () { return [
-    { type: TemplateRef, },
-]; };
 /**
  * The NgbPanel directive represents an individual panel with the title and collapsible
  * content
@@ -43,32 +43,32 @@ NgbPanelContent.ctorParameters = function () { return [
 var NgbPanel = (function () {
     function NgbPanel() {
         /**
-         *  A flag determining whether the panel is disabled or not.
-         *  When disabled, the panel cannot be toggled.
-         */
+           *  A flag determining whether the panel is disabled or not.
+           *  When disabled, the panel cannot be toggled.
+           */
         this.disabled = false;
         /**
-         *  An optional id for the panel. The id should be unique.
-         *  If not provided, it will be auto-generated.
-         */
+           *  An optional id for the panel. The id should be unique.
+           *  If not provided, it will be auto-generated.
+           */
         this.id = "ngb-panel-" + nextId++;
     }
+    NgbPanel.decorators = [
+        { type: Directive, args: [{ selector: 'ngb-panel' },] },
+    ];
+    /** @nocollapse */
+    NgbPanel.ctorParameters = function () { return []; };
+    NgbPanel.propDecorators = {
+        "disabled": [{ type: Input },],
+        "id": [{ type: Input },],
+        "title": [{ type: Input },],
+        "type": [{ type: Input },],
+        "contentTpl": [{ type: ContentChild, args: [NgbPanelContent,] },],
+        "titleTpl": [{ type: ContentChild, args: [NgbPanelTitle,] },],
+    };
     return NgbPanel;
 }());
 export { NgbPanel };
-NgbPanel.decorators = [
-    { type: Directive, args: [{ selector: 'ngb-panel' },] },
-];
-/** @nocollapse */
-NgbPanel.ctorParameters = function () { return []; };
-NgbPanel.propDecorators = {
-    'disabled': [{ type: Input },],
-    'id': [{ type: Input },],
-    'title': [{ type: Input },],
-    'type': [{ type: Input },],
-    'contentTpl': [{ type: ContentChild, args: [NgbPanelContent,] },],
-    'titleTpl': [{ type: ContentChild, args: [NgbPanelTitle,] },],
-};
 /**
  * The NgbAccordion directive is a collection of panels.
  * It can assure that only one panel can be opened at a time.
@@ -76,20 +76,20 @@ NgbPanel.propDecorators = {
 var NgbAccordion = (function () {
     function NgbAccordion(config) {
         /**
-         * A map that stores each panel state
-         */
+           * A map that stores each panel state
+           */
         this._states = new Map();
         /**
-         * A map that stores references to all panels
-         */
+           * A map that stores references to all panels
+           */
         this._panelRefs = new Map();
         /**
-         * An array or comma separated strings of panel identifiers that should be opened
-         */
+           * An array or comma separated strings of panel identifiers that should be opened
+           */
         this.activeIds = [];
         /**
-         * A panel change event fired right before the panel toggle happens. See NgbPanelChangeEvent for payload details
-         */
+           * A panel change event fired right before the panel toggle happens. See NgbPanelChangeEvent for payload details
+           */
         this.panelChange = new EventEmitter();
         this.type = config.type;
         this.closeOtherPanels = config.closeOthers;
@@ -97,7 +97,13 @@ var NgbAccordion = (function () {
     /**
      * Programmatically toggle a panel with a given id.
      */
-    NgbAccordion.prototype.toggle = function (panelId) {
+    /**
+       * Programmatically toggle a panel with a given id.
+       */
+    NgbAccordion.prototype.toggle = /**
+       * Programmatically toggle a panel with a given id.
+       */
+    function (panelId) {
         var panel = this._panelRefs.get(panelId);
         if (panel && !panel.disabled) {
             var nextState = !this._states.get(panelId);
@@ -127,7 +133,13 @@ var NgbAccordion = (function () {
     /**
      * @internal
      */
-    NgbAccordion.prototype.isOpen = function (panelId) { return this._states.get(panelId); };
+    /**
+       * @internal
+       */
+    NgbAccordion.prototype.isOpen = /**
+       * @internal
+       */
+    function (panelId) { return this._states.get(panelId); };
     NgbAccordion.prototype._closeOthers = function (panelId) {
         var _this = this;
         this._states.forEach(function (state, id) {
@@ -150,26 +162,26 @@ var NgbAccordion = (function () {
             _this._panelRefs.set(panel.id, panel);
         });
     };
+    NgbAccordion.decorators = [
+        { type: Component, args: [{
+                    selector: 'ngb-accordion',
+                    exportAs: 'ngbAccordion',
+                    host: { 'role': 'tablist', '[attr.aria-multiselectable]': '!closeOtherPanels' },
+                    template: "\n  <div class=\"card\">\n    <ng-template ngFor let-panel [ngForOf]=\"panels\">\n      <div role=\"tab\" id=\"{{panel.id}}-header\"\n        [class]=\"'card-header ' + (panel.type ? 'card-'+panel.type: type ? 'card-'+type : '')\" [class.active]=\"isOpen(panel.id)\">\n        <a href (click)=\"!!toggle(panel.id)\" [class.text-muted]=\"panel.disabled\" [attr.tabindex]=\"(panel.disabled ? '-1' : null)\"\n          [attr.aria-expanded]=\"isOpen(panel.id)\" [attr.aria-controls]=\"(isOpen(panel.id) ? panel.id : null)\"\n          [attr.aria-disabled]=\"panel.disabled\">\n          {{panel.title}}<ng-template [ngTemplateOutlet]=\"panel.titleTpl?.templateRef\"></ng-template>\n        </a>\n      </div>\n      <div id=\"{{panel.id}}\" role=\"tabpanel\" [attr.aria-labelledby]=\"panel.id + '-header'\" class=\"card-body\" *ngIf=\"isOpen(panel.id)\">\n        <ng-template [ngTemplateOutlet]=\"panel.contentTpl.templateRef\"></ng-template>\n      </div>\n    </ng-template>\n  </div>\n"
+                },] },
+    ];
+    /** @nocollapse */
+    NgbAccordion.ctorParameters = function () { return [
+        { type: NgbAccordionConfig, },
+    ]; };
+    NgbAccordion.propDecorators = {
+        "panels": [{ type: ContentChildren, args: [NgbPanel,] },],
+        "activeIds": [{ type: Input },],
+        "closeOtherPanels": [{ type: Input, args: ['closeOthers',] },],
+        "type": [{ type: Input },],
+        "panelChange": [{ type: Output },],
+    };
     return NgbAccordion;
 }());
 export { NgbAccordion };
-NgbAccordion.decorators = [
-    { type: Component, args: [{
-                selector: 'ngb-accordion',
-                exportAs: 'ngbAccordion',
-                host: { 'role': 'tablist', '[attr.aria-multiselectable]': '!closeOtherPanels' },
-                template: "\n  <div class=\"card\">\n    <ng-template ngFor let-panel [ngForOf]=\"panels\">\n      <div role=\"tab\" id=\"{{panel.id}}-header\"\n        [class]=\"'card-header ' + (panel.type ? 'card-'+panel.type: type ? 'card-'+type : '')\" [class.active]=\"isOpen(panel.id)\">\n        <a href (click)=\"!!toggle(panel.id)\" [class.text-muted]=\"panel.disabled\" [attr.tabindex]=\"(panel.disabled ? '-1' : null)\"\n          [attr.aria-expanded]=\"isOpen(panel.id)\" [attr.aria-controls]=\"(isOpen(panel.id) ? panel.id : null)\"\n          [attr.aria-disabled]=\"panel.disabled\">\n          {{panel.title}}<ng-template [ngTemplateOutlet]=\"panel.titleTpl?.templateRef\"></ng-template>\n        </a>\n      </div>\n      <div id=\"{{panel.id}}\" role=\"tabpanel\" [attr.aria-labelledby]=\"panel.id + '-header'\" class=\"card-body\" *ngIf=\"isOpen(panel.id)\">\n        <ng-template [ngTemplateOutlet]=\"panel.contentTpl.templateRef\"></ng-template>\n      </div>\n    </ng-template>\n  </div>\n"
-            },] },
-];
-/** @nocollapse */
-NgbAccordion.ctorParameters = function () { return [
-    { type: NgbAccordionConfig, },
-]; };
-NgbAccordion.propDecorators = {
-    'panels': [{ type: ContentChildren, args: [NgbPanel,] },],
-    'activeIds': [{ type: Input },],
-    'closeOtherPanels': [{ type: Input, args: ['closeOthers',] },],
-    'type': [{ type: Input },],
-    'panelChange': [{ type: Output },],
-};
 //# sourceMappingURL=accordion.js.map

@@ -10,19 +10,31 @@ var NgbActiveModal = (function () {
     /**
      * Can be used to close a modal, passing an optional result.
      */
-    NgbActiveModal.prototype.close = function (result) { };
+    /**
+       * Can be used to close a modal, passing an optional result.
+       */
+    NgbActiveModal.prototype.close = /**
+       * Can be used to close a modal, passing an optional result.
+       */
+    function (result) { };
     /**
      * Can be used to dismiss a modal, passing an optional reason.
      */
-    NgbActiveModal.prototype.dismiss = function (reason) { };
+    /**
+       * Can be used to dismiss a modal, passing an optional reason.
+       */
+    NgbActiveModal.prototype.dismiss = /**
+       * Can be used to dismiss a modal, passing an optional reason.
+       */
+    function (reason) { };
+    NgbActiveModal.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    NgbActiveModal.ctorParameters = function () { return []; };
     return NgbActiveModal;
 }());
 export { NgbActiveModal };
-NgbActiveModal.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-NgbActiveModal.ctorParameters = function () { return []; };
 /**
  * A reference to a newly opened modal.
  */
@@ -44,20 +56,32 @@ var NgbModalRef = (function () {
          * The instance of component used as modal's content.
          * Undefined when a TemplateRef is used as modal's content.
          */
-        get: function () {
+        get: /**
+           * The instance of component used as modal's content.
+           * Undefined when a TemplateRef is used as modal's content.
+           */
+        function () {
             if (this._contentRef.componentRef) {
                 return this._contentRef.componentRef.instance;
             }
         },
         // only needed to keep TS1.8 compatibility
-        set: function (instance) { },
+        set: 
+        // only needed to keep TS1.8 compatibility
+        function (instance) { },
         enumerable: true,
         configurable: true
     });
     /**
      * Can be used to close a modal, passing an optional result.
      */
-    NgbModalRef.prototype.close = function (result) {
+    /**
+       * Can be used to close a modal, passing an optional result.
+       */
+    NgbModalRef.prototype.close = /**
+       * Can be used to close a modal, passing an optional result.
+       */
+    function (result) {
         if (this._windowCmptRef) {
             this._resolve(result);
             this._removeModalElements();
@@ -66,7 +90,13 @@ var NgbModalRef = (function () {
     /**
      * Can be used to dismiss a modal, passing an optional reason.
      */
-    NgbModalRef.prototype.dismiss = function (reason) {
+    /**
+       * Can be used to dismiss a modal, passing an optional reason.
+       */
+    NgbModalRef.prototype.dismiss = /**
+       * Can be used to dismiss a modal, passing an optional reason.
+       */
+    function (reason) {
         if (this._windowCmptRef) {
             this._reject(reason);
             this._removeModalElements(reason);
@@ -93,16 +123,16 @@ var NgbModalRef = (function () {
             _this._contentRef = null;
         }, delay);
     };
+    NgbModalRef.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    NgbModalRef.ctorParameters = function () { return [
+        { type: ComponentRef, },
+        { type: ContentRef, },
+        { type: ComponentRef, },
+    ]; };
     return NgbModalRef;
 }());
 export { NgbModalRef };
-NgbModalRef.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-NgbModalRef.ctorParameters = function () { return [
-    { type: ComponentRef, },
-    { type: ContentRef, },
-    { type: ComponentRef, },
-]; };
 //# sourceMappingURL=modal-ref.js.map

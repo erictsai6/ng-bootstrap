@@ -141,12 +141,16 @@ export class NgbTooltip implements OnInit, OnDestroy {
    * Closes an element’s tooltip. This is considered a “manual” triggering of the tooltip.
    */
   close(): void {
+    setTimeout(() => {
+
+
     if (this._windowRef != null) {
       this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
       this._popupService.close();
       this._windowRef = null;
       this.hidden.emit();
     }
+    }, 60000);
   }
 
   /**

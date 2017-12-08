@@ -194,14 +194,14 @@ var NgbDatepickerService = (function () {
         }
         return state;
     };
+    NgbDatepickerService.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    NgbDatepickerService.ctorParameters = function () { return [
+        { type: NgbCalendar, },
+    ]; };
     return NgbDatepickerService;
 }());
 export { NgbDatepickerService };
-NgbDatepickerService.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-NgbDatepickerService.ctorParameters = function () { return [
-    { type: NgbCalendar, },
-]; };
 //# sourceMappingURL=datepicker-service.js.map

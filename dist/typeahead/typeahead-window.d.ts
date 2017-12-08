@@ -54,12 +54,12 @@ export declare class NgbTypeaheadWindow implements OnInit {
      */
     focusFirst: boolean;
     /**
-     * Typeahead match results to be displayed. Created as get and set so the ngOutletContext is only recreated on data
+     * Typeahead match results to be displayed. Created as get and set so the ngTemplateOutletContext is only recreated on data
      * changes.
      */
     results: any;
     /**
-     * Search term used to get current results. Created as get and set so the ngOutletContext is only recreated on data
+     * Search term used to get current results. Created as get and set so the ngTemplateOutletContext is only recreated on data
      * changes.
      */
     term: string;

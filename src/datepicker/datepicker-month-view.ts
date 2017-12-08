@@ -21,7 +21,7 @@ import {DayTemplateContext} from './datepicker-day-template-context';
       <div *ngIf="!isCollapsed(week)" class="ngb-dp-week s-row">
         <div *ngIf="showWeekNumbers" class="ngb-dp-week-number small text-center font-italic text-muted">{{ week.number }}</div>
         <ng-template ngFor let-day [ngForOf]="week.days">
-          <ng-template [ngTemplateOutlet]="dayTemplate" [ngOutletContext]="buildContext(day)">
+          <ng-template [ngTemplateOutlet]="dayTemplate" [ngTemplateOutletContext]="buildContext(day)">
           </ng-template>
         </ng-template>
       </div>

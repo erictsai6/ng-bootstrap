@@ -10,12 +10,12 @@ var NgbTypeaheadConfig = (function () {
         this.focusFirst = true;
         this.showHint = false;
     }
+    NgbTypeaheadConfig.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    NgbTypeaheadConfig.ctorParameters = function () { return []; };
     return NgbTypeaheadConfig;
 }());
 export { NgbTypeaheadConfig };
-NgbTypeaheadConfig.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-NgbTypeaheadConfig.ctorParameters = function () { return []; };
 //# sourceMappingURL=typeahead-config.js.map

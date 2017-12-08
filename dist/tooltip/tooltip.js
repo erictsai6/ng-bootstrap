@@ -8,24 +8,24 @@ var NgbTooltipWindow = (function () {
     function NgbTooltipWindow() {
         this.placement = 'top';
     }
+    NgbTooltipWindow.decorators = [
+        { type: Component, args: [{
+                    selector: 'ngb-tooltip-window',
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    host: { '[class]': '"tooltip show bs-tooltip-" + placement', 'role': 'tooltip', '[id]': 'id' },
+                    template: "<div class=\"arrow\"></div><div class=\"tooltip-inner\"><ng-content></ng-content></div>",
+                    styles: ["\n    :host.bs-tooltip-top .arrow, :host.bs-tooltip-bottom .arrow {\n      left: 50%;\n    }\n\n    :host.bs-tooltip-left .arrow, :host.bs-tooltip-right .arrow {\n      top: 50%;\n    }\n  "]
+                },] },
+    ];
+    /** @nocollapse */
+    NgbTooltipWindow.ctorParameters = function () { return []; };
+    NgbTooltipWindow.propDecorators = {
+        "placement": [{ type: Input },],
+        "id": [{ type: Input },],
+    };
     return NgbTooltipWindow;
 }());
 export { NgbTooltipWindow };
-NgbTooltipWindow.decorators = [
-    { type: Component, args: [{
-                selector: 'ngb-tooltip-window',
-                changeDetection: ChangeDetectionStrategy.OnPush,
-                host: { '[class]': '"tooltip show bs-tooltip-" + placement', 'role': 'tooltip', '[id]': 'id' },
-                template: "<div class=\"arrow\"></div><div class=\"tooltip-inner\"><ng-content></ng-content></div>",
-                styles: ["\n    :host.bs-tooltip-top .arrow, :host.bs-tooltip-bottom .arrow {\n      left: 50%;\n    }\n\n    :host.bs-tooltip-left .arrow, :host.bs-tooltip-right .arrow {\n      top: 50%;\n    }\n  "]
-            },] },
-];
-/** @nocollapse */
-NgbTooltipWindow.ctorParameters = function () { return []; };
-NgbTooltipWindow.propDecorators = {
-    'placement': [{ type: Input },],
-    'id': [{ type: Input },],
-};
 /**
  * A lightweight, extensible directive for fancy tooltip creation.
  */
@@ -35,12 +35,12 @@ var NgbTooltip = (function () {
         this._elementRef = _elementRef;
         this._renderer = _renderer;
         /**
-         * Emits an event when the tooltip is shown
-         */
+           * Emits an event when the tooltip is shown
+           */
         this.shown = new EventEmitter();
         /**
-         * Emits an event when the tooltip is hidden
-         */
+           * Emits an event when the tooltip is hidden
+           */
         this.hidden = new EventEmitter();
         this._ngbTooltipWindowId = "ngb-tooltip-" + nextId++;
         this.placement = config.placement;
@@ -55,10 +55,10 @@ var NgbTooltip = (function () {
     }
     Object.defineProperty(NgbTooltip.prototype, "ngbTooltip", {
         get: function () { return this._ngbTooltip; },
-        /**
-         * Content to be displayed as tooltip. If falsy, the tooltip won't open.
-         */
-        set: function (value) {
+        set: /**
+           * Content to be displayed as tooltip. If falsy, the tooltip won't open.
+           */
+        function (value) {
             this._ngbTooltip = value;
             if (!value && this._windowRef) {
                 this.close();
@@ -71,7 +71,15 @@ var NgbTooltip = (function () {
      * Opens an element’s tooltip. This is considered a “manual” triggering of the tooltip.
      * The context is an optional value to be injected into the tooltip template when it is created.
      */
-    NgbTooltip.prototype.open = function (context) {
+    /**
+       * Opens an element’s tooltip. This is considered a “manual” triggering of the tooltip.
+       * The context is an optional value to be injected into the tooltip template when it is created.
+       */
+    NgbTooltip.prototype.open = /**
+       * Opens an element’s tooltip. This is considered a “manual” triggering of the tooltip.
+       * The context is an optional value to be injected into the tooltip template when it is created.
+       */
+    function (context) {
         if (!this._windowRef && this._ngbTooltip) {
             this._windowRef = this._popupService.open(this._ngbTooltip, context);
             this._windowRef.instance.placement = this.placement;
@@ -91,18 +99,33 @@ var NgbTooltip = (function () {
     /**
      * Closes an element’s tooltip. This is considered a “manual” triggering of the tooltip.
      */
-    NgbTooltip.prototype.close = function () {
-        if (this._windowRef != null) {
-            this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
-            this._popupService.close();
-            this._windowRef = null;
-            this.hidden.emit();
-        }
+    /**
+       * Closes an element’s tooltip. This is considered a “manual” triggering of the tooltip.
+       */
+    NgbTooltip.prototype.close = /**
+       * Closes an element’s tooltip. This is considered a “manual” triggering of the tooltip.
+       */
+    function () {
+        var _this = this;
+        setTimeout(function () {
+            if (_this._windowRef != null) {
+                _this._renderer.removeAttribute(_this._elementRef.nativeElement, 'aria-describedby');
+                _this._popupService.close();
+                _this._windowRef = null;
+                _this.hidden.emit();
+            }
+        }, 60000);
     };
     /**
      * Toggles an element’s tooltip. This is considered a “manual” triggering of the tooltip.
      */
-    NgbTooltip.prototype.toggle = function () {
+    /**
+       * Toggles an element’s tooltip. This is considered a “manual” triggering of the tooltip.
+       */
+    NgbTooltip.prototype.toggle = /**
+       * Toggles an element’s tooltip. This is considered a “manual” triggering of the tooltip.
+       */
+    function () {
         if (this._windowRef) {
             this.close();
         }
@@ -113,7 +136,13 @@ var NgbTooltip = (function () {
     /**
      * Returns whether or not the tooltip is currently being shown
      */
-    NgbTooltip.prototype.isOpen = function () { return this._windowRef != null; };
+    /**
+       * Returns whether or not the tooltip is currently being shown
+       */
+    NgbTooltip.prototype.isOpen = /**
+       * Returns whether or not the tooltip is currently being shown
+       */
+    function () { return this._windowRef != null; };
     NgbTooltip.prototype.ngOnInit = function () {
         this._unregisterListenersFn = listenToTriggers(this._renderer, this._elementRef.nativeElement, this.triggers, this.open.bind(this), this.close.bind(this), this.toggle.bind(this));
     };
@@ -122,28 +151,28 @@ var NgbTooltip = (function () {
         this._unregisterListenersFn();
         this._zoneSubscription.unsubscribe();
     };
+    NgbTooltip.decorators = [
+        { type: Directive, args: [{ selector: '[ngbTooltip]', exportAs: 'ngbTooltip' },] },
+    ];
+    /** @nocollapse */
+    NgbTooltip.ctorParameters = function () { return [
+        { type: ElementRef, },
+        { type: Renderer2, },
+        { type: Injector, },
+        { type: ComponentFactoryResolver, },
+        { type: ViewContainerRef, },
+        { type: NgbTooltipConfig, },
+        { type: NgZone, },
+    ]; };
+    NgbTooltip.propDecorators = {
+        "placement": [{ type: Input },],
+        "triggers": [{ type: Input },],
+        "container": [{ type: Input },],
+        "shown": [{ type: Output },],
+        "hidden": [{ type: Output },],
+        "ngbTooltip": [{ type: Input },],
+    };
     return NgbTooltip;
 }());
 export { NgbTooltip };
-NgbTooltip.decorators = [
-    { type: Directive, args: [{ selector: '[ngbTooltip]', exportAs: 'ngbTooltip' },] },
-];
-/** @nocollapse */
-NgbTooltip.ctorParameters = function () { return [
-    { type: ElementRef, },
-    { type: Renderer2, },
-    { type: Injector, },
-    { type: ComponentFactoryResolver, },
-    { type: ViewContainerRef, },
-    { type: NgbTooltipConfig, },
-    { type: NgZone, },
-]; };
-NgbTooltip.propDecorators = {
-    'placement': [{ type: Input },],
-    'triggers': [{ type: Input },],
-    'container': [{ type: Input },],
-    'shown': [{ type: Output },],
-    'hidden': [{ type: Output },],
-    'ngbTooltip': [{ type: Input },],
-};
 //# sourceMappingURL=tooltip.js.map

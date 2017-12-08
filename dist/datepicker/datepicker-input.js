@@ -1,4 +1,4 @@
-import { Directive, Input, ElementRef, ViewContainerRef, Renderer2, ComponentFactoryResolver, NgZone, forwardRef, EventEmitter, Output } from '@angular/core';
+import { Directive, Input, ElementRef, ViewContainerRef, Renderer2, ComponentFactoryResolver, NgZone, TemplateRef, forwardRef, EventEmitter, Output } from '@angular/core';
 import { NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import { NgbDate } from './ngb-date';
 import { NgbDatepicker } from './datepicker';
@@ -32,14 +32,14 @@ var NgbInputDatepicker = (function () {
         this._calendar = _calendar;
         this._cRef = null;
         /**
-         * Placement of a datepicker popup. Accepts: "top", "bottom", "left", "right", "bottom-left",
-         * "bottom-right" etc.
-         */
+           * Placement of a datepicker popup. Accepts: "top", "bottom", "left", "right", "bottom-left",
+           * "bottom-right" etc.
+           */
         this.placement = 'bottom-left';
         /**
-         * An event fired when navigation happens and currently displayed month changes.
-         * See NgbDatepickerNavigateEvent for the payload info.
-         */
+           * An event fired when navigation happens and currently displayed month changes.
+           * See NgbDatepickerNavigateEvent for the payload info.
+           */
         this.navigate = new EventEmitter();
         this._onChange = function (_) { };
         this._onTouched = function () { };
@@ -92,7 +92,13 @@ var NgbInputDatepicker = (function () {
     /**
      * Opens the datepicker with the selected date indicated by the ngModel value.
      */
-    NgbInputDatepicker.prototype.open = function () {
+    /**
+       * Opens the datepicker with the selected date indicated by the ngModel value.
+       */
+    NgbInputDatepicker.prototype.open = /**
+       * Opens the datepicker with the selected date indicated by the ngModel value.
+       */
+    function () {
         var _this = this;
         if (!this.isOpen()) {
             var cf = this._cfr.resolveComponentFactory(NgbDatepicker);
@@ -115,7 +121,13 @@ var NgbInputDatepicker = (function () {
     /**
      * Closes the datepicker popup.
      */
-    NgbInputDatepicker.prototype.close = function () {
+    /**
+       * Closes the datepicker popup.
+       */
+    NgbInputDatepicker.prototype.close = /**
+       * Closes the datepicker popup.
+       */
+    function () {
         if (this.isOpen()) {
             this._vcRef.remove(this._vcRef.indexOf(this._cRef.hostView));
             this._cRef = null;
@@ -124,7 +136,13 @@ var NgbInputDatepicker = (function () {
     /**
      * Toggles the datepicker popup (opens when closed and closes when opened).
      */
-    NgbInputDatepicker.prototype.toggle = function () {
+    /**
+       * Toggles the datepicker popup (opens when closed and closes when opened).
+       */
+    NgbInputDatepicker.prototype.toggle = /**
+       * Toggles the datepicker popup (opens when closed and closes when opened).
+       */
+    function () {
         if (this.isOpen()) {
             this.close();
         }
@@ -138,7 +156,19 @@ var NgbInputDatepicker = (function () {
      * If nothing or invalid date provided calendar will open current month.
      * Use 'startDate' input as an alternative
      */
-    NgbInputDatepicker.prototype.navigateTo = function (date) {
+    /**
+       * Navigates current view to provided date.
+       * With default calendar we use ISO 8601: 'month' is 1=Jan ... 12=Dec.
+       * If nothing or invalid date provided calendar will open current month.
+       * Use 'startDate' input as an alternative
+       */
+    NgbInputDatepicker.prototype.navigateTo = /**
+       * Navigates current view to provided date.
+       * With default calendar we use ISO 8601: 'month' is 1=Jan ... 12=Dec.
+       * If nothing or invalid date provided calendar will open current month.
+       * Use 'startDate' input as an alternative
+       */
+    function (date) {
         if (this.isOpen()) {
             this._cRef.instance.navigateTo(date);
         }
@@ -179,46 +209,46 @@ var NgbInputDatepicker = (function () {
             this._onTouched();
         }
     };
+    NgbInputDatepicker.decorators = [
+        { type: Directive, args: [{
+                    selector: 'input[ngbDatepicker]',
+                    exportAs: 'ngbDatepicker',
+                    host: {
+                        '(input)': 'manualDateChange($event.target.value)',
+                        '(change)': 'manualDateChange($event.target.value, true)',
+                        '(keyup.esc)': 'close()',
+                        '(blur)': 'onBlur()'
+                    },
+                    providers: [NGB_DATEPICKER_VALUE_ACCESSOR, NGB_DATEPICKER_VALIDATOR, NgbDatepickerService]
+                },] },
+    ];
+    /** @nocollapse */
+    NgbInputDatepicker.ctorParameters = function () { return [
+        { type: NgbDateParserFormatter, },
+        { type: ElementRef, },
+        { type: ViewContainerRef, },
+        { type: Renderer2, },
+        { type: ComponentFactoryResolver, },
+        { type: NgZone, },
+        { type: NgbDatepickerService, },
+        { type: NgbCalendar, },
+    ]; };
+    NgbInputDatepicker.propDecorators = {
+        "dayTemplate": [{ type: Input },],
+        "displayMonths": [{ type: Input },],
+        "firstDayOfWeek": [{ type: Input },],
+        "markDisabled": [{ type: Input },],
+        "minDate": [{ type: Input },],
+        "maxDate": [{ type: Input },],
+        "navigation": [{ type: Input },],
+        "outsideDays": [{ type: Input },],
+        "placement": [{ type: Input },],
+        "showWeekdays": [{ type: Input },],
+        "showWeekNumbers": [{ type: Input },],
+        "startDate": [{ type: Input },],
+        "navigate": [{ type: Output },],
+    };
     return NgbInputDatepicker;
 }());
 export { NgbInputDatepicker };
-NgbInputDatepicker.decorators = [
-    { type: Directive, args: [{
-                selector: 'input[ngbDatepicker]',
-                exportAs: 'ngbDatepicker',
-                host: {
-                    '(input)': 'manualDateChange($event.target.value)',
-                    '(change)': 'manualDateChange($event.target.value, true)',
-                    '(keyup.esc)': 'close()',
-                    '(blur)': 'onBlur()'
-                },
-                providers: [NGB_DATEPICKER_VALUE_ACCESSOR, NGB_DATEPICKER_VALIDATOR, NgbDatepickerService]
-            },] },
-];
-/** @nocollapse */
-NgbInputDatepicker.ctorParameters = function () { return [
-    { type: NgbDateParserFormatter, },
-    { type: ElementRef, },
-    { type: ViewContainerRef, },
-    { type: Renderer2, },
-    { type: ComponentFactoryResolver, },
-    { type: NgZone, },
-    { type: NgbDatepickerService, },
-    { type: NgbCalendar, },
-]; };
-NgbInputDatepicker.propDecorators = {
-    'dayTemplate': [{ type: Input },],
-    'displayMonths': [{ type: Input },],
-    'firstDayOfWeek': [{ type: Input },],
-    'markDisabled': [{ type: Input },],
-    'minDate': [{ type: Input },],
-    'maxDate': [{ type: Input },],
-    'navigation': [{ type: Input },],
-    'outsideDays': [{ type: Input },],
-    'placement': [{ type: Input },],
-    'showWeekdays': [{ type: Input },],
-    'showWeekNumbers': [{ type: Input },],
-    'startDate': [{ type: Input },],
-    'navigate': [{ type: Output },],
-};
 //# sourceMappingURL=datepicker-input.js.map

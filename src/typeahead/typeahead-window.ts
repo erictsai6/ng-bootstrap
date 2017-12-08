@@ -64,16 +64,16 @@ export interface NoResultsTemplateContext {
           (mouseenter)="context.markActive(idx)"
           (click)="context.select(result)">
             <ng-template [ngTemplateOutlet]="resultTemplate || rt"
-            [ngOutletContext]="{result: result, term: term, formatter: formatter}"></ng-template>
+            [ngTemplateOutletContext]="{result: result, term: term, formatter: formatter}"></ng-template>
         </button>
       </ng-template>
     </ng-template>
     <ng-template [ngTemplateOutlet]="windowTemplate || wt"
-      [ngOutletContext]="_getWindowContext()">
+      [ngTemplateOutletContext]="_getWindowContext()">
     </ng-template>
     <ng-template *ngIf="!results || results.length === 0"
       [ngTemplateOutlet]="noResultsTemplate"
-      [ngOutletContext]="_getNoResultsContext()">
+      [ngTemplateOutletContext]="_getNoResultsContext()">
     </ng-template>
   `
 })
@@ -96,7 +96,7 @@ export class NgbTypeaheadWindow implements OnInit {
   @Input() focusFirst = true;
 
   /**
-   * Typeahead match results to be displayed. Created as get and set so the ngOutletContext is only recreated on data
+   * Typeahead match results to be displayed. Created as get and set so the ngTemplateOutletContext is only recreated on data
    * changes.
    */
   @Input()
@@ -109,7 +109,7 @@ export class NgbTypeaheadWindow implements OnInit {
   }
 
   /**
-   * Search term used to get current results. Created as get and set so the ngOutletContext is only recreated on data
+   * Search term used to get current results. Created as get and set so the ngTemplateOutletContext is only recreated on data
    * changes.
    */
   @Input()

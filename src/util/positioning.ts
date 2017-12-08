@@ -86,6 +86,7 @@ export class Positioning {
     const hostElPosition = appendToBody ? this.offset(hostElement, false) : this.position(hostElement, false);
     const targetElStyles = this.getAllStyles(targetElement);
     const targetElBCR = targetElement.getBoundingClientRect();
+    const browserWidth = window.innerWidth || document.body.clientWidth;
     const placementPrimary = placement.split('-')[0] || 'top';
     const placementSecondary = placement.split('-')[1] || 'center';
 
@@ -141,6 +142,13 @@ export class Positioning {
     targetElPosition.bottom = Math.round(targetElPosition.bottom);
     targetElPosition.left = Math.round(targetElPosition.left);
     targetElPosition.right = Math.round(targetElPosition.right);
+
+    // Correct it to fit within the viewport
+    if (targetElPosition.left < 0) {
+      targetElPosition.left = 0;
+    } else if (targetElPosition.left + targetElBCR.width > browserWidth) {
+      // targetElPosition.left = browserWidth - targetElBCR.width;
+    }
 
     return targetElPosition;
   }

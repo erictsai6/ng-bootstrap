@@ -5,7 +5,7 @@ import {Component} from '@angular/core';
 
 import {NgbDatepickerModule} from './datepicker.module';
 import {NgbDatepickerMonthView} from './datepicker-month-view';
-import {MonthViewModel} from './datepicker-view-model';
+import {MonthViewModel, WeekViewModel} from './datepicker-view-model';
 import {NgbDate} from './ngb-date';
 import {NgbDatepickerDayView} from './datepicker-day-view';
 
@@ -242,7 +242,7 @@ class TestComponent {
           }
         }
       ]
-    }]
+    } as WeekViewModel]
   };
 
   monthCollapsedWeeks: MonthViewModel = {
@@ -356,7 +356,7 @@ class TestComponent {
           }
         ]
       }
-    ]
+    ] as WeekViewModel[]
   };
 
   showWeekdays = true;

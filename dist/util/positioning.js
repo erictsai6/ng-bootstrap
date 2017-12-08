@@ -1,6 +1,9 @@
 // previous version:
 // https://github.com/angular-ui/bootstrap/blob/07c31d0731f7cb068a1932b8e01d2312b796b4ec/src/position/position.js
-var Positioning = (function () {
+var 
+// previous version:
+// https://github.com/angular-ui/bootstrap/blob/07c31d0731f7cb068a1932b8e01d2312b796b4ec/src/position/position.js
+Positioning = (function () {
     function Positioning() {
     }
     Positioning.prototype.getAllStyles = function (element) { return window.getComputedStyle(element); };
@@ -72,6 +75,7 @@ var Positioning = (function () {
         var hostElPosition = appendToBody ? this.offset(hostElement, false) : this.position(hostElement, false);
         var targetElStyles = this.getAllStyles(targetElement);
         var targetElBCR = targetElement.getBoundingClientRect();
+        var browserWidth = window.innerWidth || document.body.clientWidth;
         var placementPrimary = placement.split('-')[0] || 'top';
         var placementSecondary = placement.split('-')[1] || 'center';
         var targetElPosition = {
@@ -124,10 +128,19 @@ var Positioning = (function () {
         targetElPosition.bottom = Math.round(targetElPosition.bottom);
         targetElPosition.left = Math.round(targetElPosition.left);
         targetElPosition.right = Math.round(targetElPosition.right);
+        // Correct it to fit within the viewport
+        if (targetElPosition.left < 0) {
+            targetElPosition.left = 0;
+        }
+        else if (targetElPosition.left + targetElBCR.width > browserWidth) {
+            // targetElPosition.left = browserWidth - targetElBCR.width;
+        }
         return targetElPosition;
     };
     return Positioning;
 }());
+// previous version:
+// https://github.com/angular-ui/bootstrap/blob/07c31d0731f7cb068a1932b8e01d2312b796b4ec/src/position/position.js
 export { Positioning };
 var positionService = new Positioning();
 export function positionElements(hostElement, targetElement, placement, appendToBody) {

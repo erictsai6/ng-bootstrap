@@ -9,12 +9,12 @@ var NgbTabsetConfig = (function () {
         this.justify = 'start';
         this.type = 'tabs';
     }
+    NgbTabsetConfig.decorators = [
+        { type: Injectable },
+    ];
+    /** @nocollapse */
+    NgbTabsetConfig.ctorParameters = function () { return []; };
     return NgbTabsetConfig;
 }());
 export { NgbTabsetConfig };
-NgbTabsetConfig.decorators = [
-    { type: Injectable },
-];
-/** @nocollapse */
-NgbTabsetConfig.ctorParameters = function () { return []; };
 //# sourceMappingURL=tabset-config.js.map

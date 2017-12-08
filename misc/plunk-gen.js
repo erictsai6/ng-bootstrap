@@ -32,7 +32,7 @@ import { ${demoImports} } from '${demoImport}';
   selector: 'my-app',
   template: \`
     <div class="container-fluid">
-    
+
     <hr>
     <p>
       This is a demo plnkr forked from the <strong>ng-bootstrap</strong> project: Angular powered Bootstrap.
@@ -45,13 +45,13 @@ import { ${demoImports} } from '${demoImport}';
   \`
 })
 export class App {
-}   
+}
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, ReactiveFormsModule, JsonpModule, NgbModule.forRoot()], 
+  imports: [BrowserModule, FormsModule, ReactiveFormsModule, JsonpModule, NgbModule.forRoot()],
   declarations: [App, ${demoImports}]${needsEntryCmpt ? `,\n  entryComponents: [${entryCmptClass}],` : ''}
   bootstrap: [App]
-}) 
+})
 export class AppModule {}
 `;
 }
@@ -76,7 +76,7 @@ function generatePlnkrContent(componentName, demoName) {
 <body>
   <form id="mainForm" method="post" action="${plnkrUrl}">
     <input type="hidden" name="description" value="Example usage of the ${componentName} widget from https://ng-bootstrap.github.io">
-${generateTags(['Angular', 'Bootstrap', 'ng-bootstrap', capitalize(componentName)])}  
+${generateTags(['Angular', 'Bootstrap', 'ng-bootstrap', capitalize(componentName)])}
     <input type="hidden" name="files[index.html]" value="${he.encode(generateIndexHtml())}">
     <input type="hidden" name="files[config.js]" value="${he.encode(generateConfigJs())}">
     <input type="hidden" name="files[src/main.ts]" value="${he.encode(contentMainTs)}">
@@ -119,7 +119,7 @@ function generateConfigJs() {
   return `var ver = {
     ng: '${versions.angular}'
   };
-  
+
   System.config({
   //use typescript for compilation
   transpiler: 'typescript',
